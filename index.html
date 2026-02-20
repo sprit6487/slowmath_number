@@ -47,15 +47,7 @@
             display: flex; flex-direction: column;
         }
 
-        @media (min-width: 768px) {
-            body { align-items: center; padding: 32px; }
-            .app {
-                max-width: 680px; min-height: auto;
-                border-radius: 32px;
-                box-shadow: 0 8px 48px rgba(0,0,0,0.07), 0 1px 4px rgba(0,0,0,0.04);
-                padding: 44px 32px;
-            }
-        }
+        /* 태블릿 미디어쿼리: 하단 통합 */
 
         /* 모드 카드 */
         .mode-card {
@@ -235,9 +227,7 @@
             background: #FDE8E8;
             animation: shake 0.4s ease;
         }
-        @media (min-width: 768px) {
-            .quiz-card { width: 80px; height: 80px; font-size: 1.7rem; }
-        }
+        /* quiz-card 태블릿: 하단 통합 */
 
         /* 빈칸 맞추기 칩 */
         .quiz-chip {
@@ -363,6 +353,66 @@
             animation: shake 0.4s ease;
         }
         .finger-chip.disabled { opacity: 0.4; pointer-events: none; }
+
+        /* ── 반응형: 모바일 (기본값 강화) ── */
+        @media (max-width: 374px) {
+            .app { padding: 16px 10px; }
+            .slot { border-radius: 8px; font-size: 0.9rem; }
+            .num-chip { width: 42px; height: 42px; font-size: 1rem; }
+            .quiz-card { width: 56px; height: 56px; font-size: 1.15rem; border-radius: 12px; }
+            .quiz-cards-8 .quiz-card { width: 44px; height: 44px; font-size: 1rem; border-radius: 10px; }
+            .quiz-chip { width: 48px; height: 48px; font-size: 1.05rem; }
+            .finger-chip { width: 48px; height: 48px; font-size: 1.05rem; }
+            .floating-num { width: 52px; height: 52px; font-size: 1.2rem; }
+            .hand-image { max-height: 160px; max-width: 200px; }
+            .finger-display { min-height: 170px; }
+        }
+
+        /* ── 반응형: 태블릿 (768px+) ── */
+        @media (min-width: 768px) {
+            body { align-items: center; padding: 32px; }
+            .app {
+                max-width: 720px; min-height: auto;
+                border-radius: 32px;
+                box-shadow: 0 8px 48px rgba(0,0,0,0.07), 0 1px 4px rgba(0,0,0,0.04);
+                padding: 40px 36px;
+            }
+            .btn-home { width: 44px; height: 44px; border-radius: 12px; }
+            .btn-home svg { width: 22px; height: 22px; }
+            .progress-track { height: 10px; }
+            .mode-card { padding: 20px !important; }
+            .mode-card p:first-child { font-size: 1.4rem !important; }
+            .mode-card p:last-child { font-size: 0.85rem !important; }
+            .slots-grid { gap: 6px; }
+            .slot { border-radius: 14px; font-size: 1.3rem; border-width: 3px; }
+            .num-chip { width: 64px; height: 64px; font-size: 1.35rem; }
+            .floating-num { width: 72px; height: 72px; font-size: 1.6rem; border-radius: 20px; }
+            .quiz-card { width: 80px; height: 80px; font-size: 1.7rem; border-radius: 18px; }
+            .quiz-cards-8 .quiz-card { width: 72px; height: 72px; font-size: 1.4rem; border-radius: 16px; }
+            .quiz-chip { width: 68px; height: 68px; font-size: 1.4rem; }
+            .finger-display { min-height: 300px; }
+            .hand-image { max-height: 280px; max-width: 360px; }
+            .finger-chip { width: 72px; height: 72px; font-size: 1.5rem; }
+            #finger-chips { gap: 16px !important; }
+            #quiz-chips { gap: 16px !important; }
+            .impulse-toggle { padding: 16px 20px; border-radius: 20px; }
+            .delay-btn { min-width: 44px; height: 36px; font-size: 0.85rem; }
+            .delay-countdown { font-size: 1.8rem; }
+        }
+
+        /* ── 반응형: 큰 태블릿 (1024px+) ── */
+        @media (min-width: 1024px) {
+            .app { max-width: 800px; padding: 48px 44px; }
+            .mode-card p:first-child { font-size: 1.6rem !important; }
+            .slot { font-size: 1.4rem; }
+            .num-chip { width: 72px; height: 72px; font-size: 1.5rem; }
+            .quiz-card { width: 90px; height: 90px; font-size: 1.9rem; }
+            .quiz-cards-8 .quiz-card { width: 80px; height: 80px; font-size: 1.55rem; }
+            .quiz-chip { width: 76px; height: 76px; font-size: 1.55rem; }
+            .finger-display { min-height: 360px; }
+            .hand-image { max-height: 340px; max-width: 420px; }
+            .finger-chip { width: 84px; height: 84px; font-size: 1.7rem; }
+        }
     </style>
 </head>
 <body>
@@ -747,12 +797,15 @@
 
         const chipsEl = document.getElementById('chips');
         chipsEl.innerHTML = '';
-        // 흩뿌리기 영역 높이 조정
-        const scatterH = maxNum <= 10 ? 200 : maxNum <= 20 ? 280 : maxNum <= 30 ? 360 : 480;
+        // 흩뿌리기 영역 높이 조정 (태블릿은 더 넓게)
+        const isTablet = window.innerWidth >= 768;
+        const chipPx = isTablet ? 68 : 54;
+        const scatterBase = maxNum <= 10 ? 200 : maxNum <= 20 ? 280 : maxNum <= 30 ? 360 : 480;
+        const scatterH = isTablet ? Math.round(scatterBase * 1.2) : scatterBase;
         chipsEl.style.minHeight = scatterH + 'px';
 
         // 겹침 방지를 위한 위치 계산
-        const positions = scatterPositions(nums.length, chipsEl.offsetWidth || 500, scatterH, 54);
+        const positions = scatterPositions(nums.length, chipsEl.offsetWidth || 500, scatterH, chipPx);
 
         nums.forEach((n, idx) => {
             const chip = document.createElement('div');
