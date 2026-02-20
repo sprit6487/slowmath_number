@@ -920,14 +920,16 @@
 
         const chipsEl = document.getElementById('chips');
         chipsEl.innerHTML = '';
-        // 그리드 기반 높이 계산
+        // 흩뿌리기 영역 높이 계산
         const isTablet = window.innerWidth >= 768;
         const chipPx = isTablet ? 68 : 54;
-        const cellSize = chipPx + 8;
+        const cellPad = Math.round(chipPx * 0.35);
+        const cellSize = chipPx + cellPad;
         const areaW = chipsEl.offsetWidth || 500;
         const cols = Math.max(1, Math.floor(areaW / cellSize));
-        const rows = Math.ceil(nums.length / cols);
-        const scatterH = rows * cellSize + 8;
+        const minRows = Math.ceil(nums.length / cols);
+        const totalRows = minRows + Math.max(1, Math.round(minRows * 0.35));
+        const scatterH = totalRows * cellSize;
         chipsEl.style.minHeight = scatterH + 'px';
 
         // 겹침 방지를 위한 위치 계산
@@ -1476,23 +1478,30 @@
     }
 
     function scatterPositions(count, areaW, areaH, chipSize) {
-        const gap = 8;
-        const cell = chipSize + gap;
+        const cellPad = Math.round(chipSize * 0.35);
+        const cell = chipSize + cellPad;
         const cols = Math.max(1, Math.floor(areaW / cell));
-        const rows = Math.ceil(count / cols);
-        const offsetX = Math.max(0, (areaW - cols * cell) / 2);
+        const minRows = Math.ceil(count / cols);
+        const totalRows = minRows + Math.max(1, Math.round(minRows * 0.35));
+        const totalCells = totalRows * cols;
 
-        const positions = [];
-        for (let i = 0; i < count; i++) {
-            const col = i % cols;
-            const row = Math.floor(i / cols);
-            positions.push({
-                x: offsetX + col * cell,
-                y: row * cell
-            });
-        }
-        shuffle(positions);
-        return positions;
+        // 셀 인덱스를 섞어서 count개만 선택 → 빈 셀이 생겨 흩뿌린 느낌
+        const indices = [];
+        for (let i = 0; i < totalCells; i++) indices.push(i);
+        shuffle(indices);
+        const chosen = indices.slice(0, count);
+
+        const offsetX = Math.max(0, (areaW - cols * cell) / 2);
+        const jitter = Math.max(0, cellPad);
+
+        return chosen.map(idx => {
+            const col = idx % cols;
+            const row = Math.floor(idx / cols);
+            return {
+                x: offsetX + col * cell + Math.random() * jitter,
+                y: row * cell + Math.random() * jitter
+            };
+        });
     }
 
     function shuffle(arr) {
