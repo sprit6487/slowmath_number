@@ -295,15 +295,34 @@
             box-shadow: 0 1px 3px rgba(0,0,0,0.15);
         }
         .toggle-switch.on::after { transform: translateX(20px); }
-        .delay-options {
-            display: flex; gap: 4px;
-            flex-wrap: wrap; justify-content: center;
+        .impulse-details {
             overflow: hidden;
             max-height: 0; opacity: 0;
             transition: max-height 0.3s, opacity 0.3s, margin 0.3s;
             margin-top: 0;
         }
-        .delay-options.show { max-height: 50px; opacity: 1; margin-top: 8px; }
+        .impulse-details.show { max-height: 200px; opacity: 1; margin-top: 10px; }
+        .impulse-mode-options {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+            margin-bottom: 10px;
+        }
+        .impulse-mode-btn {
+            display: flex; flex-direction: column; align-items: center;
+            padding: 10px 8px;
+            border-radius: 14px;
+            border: 2px solid #E8E2DA;
+            background: white;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .impulse-mode-btn.selected { border-color: #6BADE8; background: #EEF6FD; }
+        .impulse-mode-icon { font-size: 1.2rem; margin-bottom: 2px; }
+        .impulse-mode-label { font-size: 0.8rem; font-weight: 700; color: #4A4035; }
+        .impulse-mode-desc { font-size: 0.65rem; color: #B8AD9E; margin-top: 1px; }
+        .delay-options {
+            display: flex; gap: 4px;
+            flex-wrap: wrap; justify-content: center;
+        }
         .delay-btn {
             min-width: 38px; height: 30px; padding: 0 6px;
             border-radius: 15px;
@@ -316,8 +335,9 @@
             transition: all 0.15s;
         }
         .delay-btn.selected { border-color: #6BADE8; background: #6BADE8; color: white; }
-        /* 보기 숨김 오버레이 */
+        /* 충동방지: 보기 숨김 / 선택 잠금 */
         .chips-hidden { visibility: hidden; }
+        .chips-locked { pointer-events: none; opacity: 0.45; }
         .delay-countdown {
             text-align: center;
             font-size: 1.5rem; font-weight: 900;
@@ -542,20 +562,34 @@
                 <div class="toggle-switch" id="impulse-switch"></div>
                 <div>
                     <p class="text-sm font-semibold" style="color:#4A4035;">충동방지</p>
-                    <p class="text-xs" style="color:#B8AD9E;">보기를 늦게 보여줘요</p>
+                    <p class="text-xs" style="color:#B8AD9E;">생각할 시간을 줘요</p>
                 </div>
             </div>
-            <div class="delay-options" id="delay-options">
-                <button class="delay-btn" onclick="setDelay(1)" data-delay="1">1초</button>
-                <button class="delay-btn" onclick="setDelay(2)" data-delay="2">2초</button>
-                <button class="delay-btn" onclick="setDelay(3)" data-delay="3">3초</button>
-                <button class="delay-btn" onclick="setDelay(4)" data-delay="4">4초</button>
-                <button class="delay-btn selected" onclick="setDelay(5)" data-delay="5">5초</button>
-                <button class="delay-btn" onclick="setDelay(6)" data-delay="6">6초</button>
-                <button class="delay-btn" onclick="setDelay(7)" data-delay="7">7초</button>
-                <button class="delay-btn" onclick="setDelay(8)" data-delay="8">8초</button>
-                <button class="delay-btn" onclick="setDelay(9)" data-delay="9">9초</button>
-                <button class="delay-btn" onclick="setDelay(10)" data-delay="10">10초</button>
+            <div class="impulse-details" id="impulse-details">
+                <div class="impulse-mode-options">
+                    <button class="impulse-mode-btn selected" onclick="setImpulseMode('hide')" data-mode="hide">
+                        <span class="impulse-mode-icon">🙈</span>
+                        <span class="impulse-mode-label">보기 숨기기</span>
+                        <span class="impulse-mode-desc">N초 후 보기가 나타나요</span>
+                    </button>
+                    <button class="impulse-mode-btn" onclick="setImpulseMode('lock')" data-mode="lock">
+                        <span class="impulse-mode-icon">🔒</span>
+                        <span class="impulse-mode-label">선택 잠금</span>
+                        <span class="impulse-mode-desc">N초 동안 선택할 수 없어요</span>
+                    </button>
+                </div>
+                <div class="delay-options show">
+                    <button class="delay-btn" onclick="setDelay(1)" data-delay="1">1초</button>
+                    <button class="delay-btn" onclick="setDelay(2)" data-delay="2">2초</button>
+                    <button class="delay-btn" onclick="setDelay(3)" data-delay="3">3초</button>
+                    <button class="delay-btn" onclick="setDelay(4)" data-delay="4">4초</button>
+                    <button class="delay-btn selected" onclick="setDelay(5)" data-delay="5">5초</button>
+                    <button class="delay-btn" onclick="setDelay(6)" data-delay="6">6초</button>
+                    <button class="delay-btn" onclick="setDelay(7)" data-delay="7">7초</button>
+                    <button class="delay-btn" onclick="setDelay(8)" data-delay="8">8초</button>
+                    <button class="delay-btn" onclick="setDelay(9)" data-delay="9">9초</button>
+                    <button class="delay-btn" onclick="setDelay(10)" data-delay="10">10초</button>
+                </div>
             </div>
         </div>
     </div>
@@ -712,13 +746,21 @@
     // 충동방지
     let impulseEnabled = false;
     let impulseDelay = 5;
+    let impulseMode = 'hide'; // 'hide' = 보기 숨기기, 'lock' = 선택 잠금
     let impulseTimer = null;
 
     function toggleImpulse() {
         impulseEnabled = !impulseEnabled;
         document.getElementById('impulse-switch').classList.toggle('on', impulseEnabled);
         document.getElementById('impulse-toggle').classList.toggle('active', impulseEnabled);
-        document.getElementById('delay-options').classList.toggle('show', impulseEnabled);
+        document.getElementById('impulse-details').classList.toggle('show', impulseEnabled);
+    }
+
+    function setImpulseMode(mode) {
+        impulseMode = mode;
+        document.querySelectorAll('.impulse-mode-btn').forEach(b => {
+            b.classList.toggle('selected', b.dataset.mode === mode);
+        });
     }
 
     function setDelay(sec) {
@@ -730,7 +772,9 @@
 
     function applyImpulseDelay(chipsEl, countdownParent) {
         if (!impulseEnabled) return;
-        chipsEl.classList.add('chips-hidden');
+
+        const isHide = impulseMode === 'hide';
+        chipsEl.classList.add(isHide ? 'chips-hidden' : 'chips-locked');
 
         // 카운트다운 표시
         const cdEl = document.createElement('div');
@@ -739,7 +783,9 @@
         countdownParent.insertBefore(cdEl, chipsEl);
 
         let remaining = impulseDelay;
-        cdEl.textContent = `${remaining}초 후 보기가 나와요`;
+        cdEl.textContent = isHide
+            ? `${remaining}초 후 보기가 나와요`
+            : `${remaining}초 동안 생각해 보세요`;
 
         impulseTimer = setInterval(() => {
             remaining--;
@@ -747,9 +793,11 @@
                 clearInterval(impulseTimer);
                 impulseTimer = null;
                 cdEl.remove();
-                chipsEl.classList.remove('chips-hidden');
+                chipsEl.classList.remove('chips-hidden', 'chips-locked');
             } else {
-                cdEl.textContent = `${remaining}초 후 보기가 나와요`;
+                cdEl.textContent = isHide
+                    ? `${remaining}초 후 보기가 나와요`
+                    : `${remaining}초 동안 생각해 보세요`;
             }
         }, 1000);
     }
@@ -758,6 +806,10 @@
         if (impulseTimer) { clearInterval(impulseTimer); impulseTimer = null; }
         const cd = document.getElementById('impulse-countdown');
         if (cd) cd.remove();
+        // 잔여 클래스 정리
+        document.querySelectorAll('.chips-hidden, .chips-locked').forEach(el => {
+            el.classList.remove('chips-hidden', 'chips-locked');
+        });
     }
 
     function startGame(range) {
