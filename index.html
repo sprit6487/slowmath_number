@@ -578,12 +578,12 @@
             </div>
             <div class="impulse-details" id="impulse-details">
                 <div class="impulse-mode-options">
-                    <button class="impulse-mode-btn selected" onclick="setImpulseMode('hide')" data-mode="hide">
+                    <button class="impulse-mode-btn" onclick="setImpulseMode('hide')" data-mode="hide">
                         <span class="impulse-mode-icon">🙈</span>
                         <span class="impulse-mode-label">보기 숨기기</span>
                         <span class="impulse-mode-desc">N초 후 보기가 나타나요</span>
                     </button>
-                    <button class="impulse-mode-btn" onclick="setImpulseMode('lock')" data-mode="lock">
+                    <button class="impulse-mode-btn selected" onclick="setImpulseMode('lock')" data-mode="lock">
                         <span class="impulse-mode-icon">🔒</span>
                         <span class="impulse-mode-label">선택 잠금</span>
                         <span class="impulse-mode-desc">N초 동안 선택할 수 없어요</span>
@@ -768,7 +768,7 @@
     // 충동방지
     let impulseEnabled = false;
     let impulseDelay = 5;
-    let impulseMode = 'hide'; // 'hide' = 보기 숨기기, 'lock' = 선택 잠금
+    let impulseMode = 'lock'; // 'hide' = 보기 숨기기, 'lock' = 선택 잠금
     let impulseTimer = null;
 
     function toggleImpulse() {
