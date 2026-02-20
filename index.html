@@ -920,15 +920,18 @@
 
         const chipsEl = document.getElementById('chips');
         chipsEl.innerHTML = '';
-        // 흩뿌리기 영역 높이 조정 (태블릿은 더 넓게)
+        // 그리드 기반 높이 계산
         const isTablet = window.innerWidth >= 768;
         const chipPx = isTablet ? 68 : 54;
-        const scatterBase = maxNum <= 10 ? 200 : maxNum <= 20 ? 280 : maxNum <= 30 ? 360 : 480;
-        const scatterH = isTablet ? Math.round(scatterBase * 1.2) : scatterBase;
+        const cellSize = chipPx + 8;
+        const areaW = chipsEl.offsetWidth || 500;
+        const cols = Math.max(1, Math.floor(areaW / cellSize));
+        const rows = Math.ceil(nums.length / cols);
+        const scatterH = rows * cellSize + 8;
         chipsEl.style.minHeight = scatterH + 'px';
 
         // 겹침 방지를 위한 위치 계산
-        const positions = scatterPositions(nums.length, chipsEl.offsetWidth || 500, scatterH, chipPx);
+        const positions = scatterPositions(nums.length, areaW, scatterH, chipPx);
 
         nums.forEach((n, idx) => {
             const chip = document.createElement('div');
@@ -1473,26 +1476,23 @@
     }
 
     function scatterPositions(count, areaW, areaH, chipSize) {
-        const pad = 4;
+        const gap = 8;
+        const cell = chipSize + gap;
+        const cols = Math.max(1, Math.floor(areaW / cell));
+        const rows = Math.ceil(count / cols);
+        const jitter = Math.max(0, gap - 2);
+        const offsetX = Math.max(0, (areaW - cols * cell) / 2);
+
         const positions = [];
-        const maxW = Math.max(areaW - chipSize - pad * 2, chipSize);
-        const maxH = Math.max(areaH - chipSize - pad * 2, chipSize);
         for (let i = 0; i < count; i++) {
-            let x, y, attempts = 0, ok = false;
-            while (!ok && attempts < 200) {
-                x = pad + Math.random() * maxW;
-                y = pad + Math.random() * maxH;
-                ok = true;
-                for (const p of positions) {
-                    const dx = p.x - x, dy = p.y - y;
-                    if (Math.sqrt(dx * dx + dy * dy) < chipSize + 2) {
-                        ok = false; break;
-                    }
-                }
-                attempts++;
-            }
-            positions.push({ x, y });
+            const col = i % cols;
+            const row = Math.floor(i / cols);
+            positions.push({
+                x: offsetX + col * cell + Math.random() * jitter,
+                y: row * cell + Math.random() * jitter
+            });
         }
+        shuffle(positions);
         return positions;
     }
 
