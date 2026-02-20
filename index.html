@@ -874,6 +874,7 @@
 
         // TTS 초기화
         if (window.speechSynthesis) speechSynthesis.speak(new SpeechSynthesisUtterance(''));
+        setTimeout(() => speak('천천히 생각하고 풀어보세요.'), 100);
 
         // 충동방지
         applyImpulseDelay(chipsEl, chipsEl.parentElement);
