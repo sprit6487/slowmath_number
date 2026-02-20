@@ -122,12 +122,12 @@
 
         /* 드래그 숫자 */
         .num-chip {
-            width: 26px; height: 26px;
+            width: 34px; height: 34px;
             border-radius: 50%;
-            border: 1.5px solid #E8E2DA;
+            border: 2px solid #E8E2DA;
             background: white;
             display: flex; align-items: center; justify-content: center;
-            font-size: 0.6rem; font-weight: 800;
+            font-size: 0.78rem; font-weight: 800;
             color: #4A4035;
             cursor: grab;
             touch-action: none;
@@ -149,12 +149,12 @@
         /* 플로팅 */
         .floating-num {
             position: fixed; z-index: 9999; pointer-events: none;
-            width: 32px; height: 32px;
-            border-radius: 10px;
+            width: 42px; height: 42px;
+            border-radius: 12px;
             background: #4A4035;
             color: white;
             display: flex; align-items: center; justify-content: center;
-            font-size: 0.75rem; font-weight: 900;
+            font-size: 0.98rem; font-weight: 900;
             transform: translate(-50%, -50%) scale(1.1);
             box-shadow: 0 8px 24px rgba(0,0,0,0.2);
         }
@@ -386,12 +386,12 @@
         @media (max-width: 374px) {
             .app { padding: 16px 10px; }
             .slot { border-radius: 8px; font-size: 0.9rem; }
-            .num-chip { width: 22px; height: 22px; font-size: 0.5rem; }
+            .num-chip { width: 29px; height: 29px; font-size: 0.65rem; }
             .quiz-card { width: 56px; height: 56px; font-size: 1.15rem; border-radius: 12px; }
             .quiz-cards-8 .quiz-card { width: 44px; height: 44px; font-size: 1rem; border-radius: 10px; }
             .quiz-chip { width: 48px; height: 48px; font-size: 1.05rem; }
             .finger-chip { width: 48px; height: 48px; font-size: 1.05rem; }
-            .floating-num { width: 28px; height: 28px; font-size: 0.6rem; }
+            .floating-num { width: 36px; height: 36px; font-size: 0.78rem; }
             .hand-image { max-height: 160px; max-width: 200px; }
             .finger-display { min-height: 170px; }
         }
@@ -413,8 +413,8 @@
             .mode-card p:last-child { font-size: 0.85rem !important; }
             .slots-grid { gap: 6px; }
             .slot { border-radius: 14px; font-size: 1.3rem; border-width: 3px; }
-            .num-chip { width: 32px; height: 32px; font-size: 0.7rem; }
-            .floating-num { width: 36px; height: 36px; font-size: 0.8rem; border-radius: 10px; }
+            .num-chip { width: 42px; height: 42px; font-size: 0.91rem; }
+            .floating-num { width: 47px; height: 47px; font-size: 1.04rem; border-radius: 12px; }
             .quiz-card { width: 80px; height: 80px; font-size: 1.7rem; border-radius: 18px; }
             .quiz-cards-8 .quiz-card { width: 72px; height: 72px; font-size: 1.4rem; border-radius: 16px; }
             .quiz-chip { width: 68px; height: 68px; font-size: 1.4rem; }
@@ -433,7 +433,7 @@
             .app { max-width: 800px; padding: 48px 44px; }
             .mode-card p:first-child { font-size: 1.6rem !important; }
             .slot { font-size: 1.4rem; }
-            .num-chip { width: 36px; height: 36px; font-size: 0.75rem; }
+            .num-chip { width: 47px; height: 47px; font-size: 0.98rem; }
             .quiz-card { width: 90px; height: 90px; font-size: 1.9rem; }
             .quiz-cards-8 .quiz-card { width: 80px; height: 80px; font-size: 1.55rem; }
             .quiz-chip { width: 76px; height: 76px; font-size: 1.55rem; }
@@ -922,7 +922,7 @@
         chipsEl.innerHTML = '';
         // 흩뿌리기 영역 높이 계산
         const isTablet = window.innerWidth >= 768;
-        const chipPx = isTablet ? 34 : 28;
+        const chipPx = isTablet ? 44 : 36;
         const cellPad = Math.round(chipPx * 0.35);
         const cellSize = chipPx + cellPad;
         const areaW = chipsEl.offsetWidth || 500;
