@@ -556,8 +556,19 @@
             </div>
         </div>
 
-        <!-- 충동방지 설정 -->
+        <!-- 음성 설정 -->
         <div style="margin-top: auto; padding-top: 12px;">
+            <div class="impulse-toggle" id="tts-toggle" onclick="toggleTTS()" style="margin-bottom: 10px;">
+                <div class="toggle-switch on" id="tts-switch"></div>
+                <div>
+                    <p class="text-sm font-semibold" style="color:#4A4035;">음성</p>
+                    <p class="text-xs" style="color:#B8AD9E;">정답/오답 음성 안내</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 충동방지 설정 -->
+        <div style="padding-top: 0;">
             <div class="impulse-toggle" id="impulse-toggle" onclick="toggleImpulse()">
                 <div class="toggle-switch" id="impulse-switch"></div>
                 <div>
@@ -742,6 +753,17 @@
     let dragValue = null;
     let dragChipEl = null;
     let floatingEl = null;
+
+    // 음성
+    let ttsEnabled = true;
+    function toggleTTS() {
+        ttsEnabled = !ttsEnabled;
+        const tog = document.getElementById('tts-toggle');
+        const sw = document.getElementById('tts-switch');
+        tog.classList.toggle('active', ttsEnabled);
+        sw.classList.toggle('on', ttsEnabled);
+        if (!ttsEnabled && window.speechSynthesis) window.speechSynthesis.cancel();
+    }
 
     // 충동방지
     let impulseEnabled = false;
@@ -1439,7 +1461,7 @@
     }
 
     function speak(text) {
-        if (!window.speechSynthesis) return;
+        if (!ttsEnabled || !window.speechSynthesis) return;
         window.speechSynthesis.cancel();
         const u = new SpeechSynthesisUtterance(text);
         u.lang = 'ko-KR'; u.rate = 0.9;
