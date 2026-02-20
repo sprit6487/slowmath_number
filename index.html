@@ -274,7 +274,71 @@
             margin: 0 auto;
             object-fit: contain;
         }
-        /* finger-answer 제거됨 (터치 선택 방식으로 변경) */
+        /* 충동방지 토글 */
+        .impulse-toggle {
+            display: flex; align-items: center; gap: 10px;
+            padding: 12px 16px;
+            border-radius: 16px;
+            border: 2px solid #E8E2DA;
+            background: white;
+            transition: border-color 0.2s, background 0.2s;
+        }
+        .impulse-toggle.active { border-color: #6BADE8; background: #EEF6FD; }
+        .toggle-switch {
+            width: 44px; height: 24px;
+            border-radius: 12px;
+            background: #D0C8BC;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.2s;
+            flex-shrink: 0;
+        }
+        .toggle-switch.on { background: #6BADE8; }
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            width: 20px; height: 20px;
+            border-radius: 50%;
+            background: white;
+            top: 2px; left: 2px;
+            transition: transform 0.2s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+        }
+        .toggle-switch.on::after { transform: translateX(20px); }
+        .delay-options {
+            display: flex; gap: 4px;
+            flex-wrap: wrap; justify-content: center;
+            overflow: hidden;
+            max-height: 0; opacity: 0;
+            transition: max-height 0.3s, opacity 0.3s, margin 0.3s;
+            margin-top: 0;
+        }
+        .delay-options.show { max-height: 50px; opacity: 1; margin-top: 8px; }
+        .delay-btn {
+            width: 36px; height: 30px;
+            border-radius: 15px;
+            border: 2px solid #E8E2DA;
+            background: white;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.75rem; font-weight: 700;
+            color: #6B5F50;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .delay-btn.selected { border-color: #6BADE8; background: #6BADE8; color: white; }
+        /* 보기 숨김 오버레이 */
+        .chips-hidden { visibility: hidden; }
+        .delay-countdown {
+            text-align: center;
+            font-size: 1.5rem; font-weight: 900;
+            color: #6BADE8;
+            padding: 16px 0;
+            animation: pulse-count 1s ease infinite;
+        }
+        @keyframes pulse-count {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.15); opacity: 0.7; }
+        }
         .finger-chip {
             width: 56px; height: 56px;
             border-radius: 50%;
@@ -380,12 +444,12 @@
                     <button onclick="startQuiz(10)"
                             class="mode-card rounded-2xl p-4 text-left border-2" style="border-color:#E8E2DA; background:white;">
                         <p class="text-lg font-bold" style="color:#4A4035;">1 ~ 10</p>
-                        <p class="text-xs mt-0.5" style="color:#B8AD9E;">연속 6개 중 3개 숨김</p>
+                        <p class="text-xs mt-0.5" style="color:#B8AD9E;">연속 8개 중 4개 숨김</p>
                     </button>
                     <button onclick="startQuiz(20)"
                             class="mode-card rounded-2xl p-4 text-left border-2" style="border-color:#E8E2DA; background:white;">
                         <p class="text-lg font-bold" style="color:#4A4035;">1 ~ 20</p>
-                        <p class="text-xs mt-0.5" style="color:#B8AD9E;">연속 6개 중 3개 숨김</p>
+                        <p class="text-xs mt-0.5" style="color:#B8AD9E;">연속 8개 중 4개 숨김</p>
                     </button>
                     <button onclick="startQuiz(30)"
                             class="mode-card rounded-2xl p-4 text-left border-2" style="border-color:#E8E2DA; background:white;">
@@ -419,6 +483,29 @@
                         <p class="text-xs mt-0.5" style="color:#B8AD9E;">두 손 세기</p>
                     </button>
                 </div>
+            </div>
+        </div>
+
+        <!-- 충동방지 설정 -->
+        <div style="margin-top: auto; padding-top: 12px;">
+            <div class="impulse-toggle" id="impulse-toggle" onclick="toggleImpulse()">
+                <div class="toggle-switch" id="impulse-switch"></div>
+                <div>
+                    <p class="text-sm font-semibold" style="color:#4A4035;">충동방지</p>
+                    <p class="text-xs" style="color:#B8AD9E;">보기를 늦게 보여줘요</p>
+                </div>
+            </div>
+            <div class="delay-options" id="delay-options">
+                <button class="delay-btn" onclick="setDelay(1)" data-delay="1">1</button>
+                <button class="delay-btn" onclick="setDelay(2)" data-delay="2">2</button>
+                <button class="delay-btn" onclick="setDelay(3)" data-delay="3">3</button>
+                <button class="delay-btn" onclick="setDelay(4)" data-delay="4">4</button>
+                <button class="delay-btn selected" onclick="setDelay(5)" data-delay="5">5</button>
+                <button class="delay-btn" onclick="setDelay(6)" data-delay="6">6</button>
+                <button class="delay-btn" onclick="setDelay(7)" data-delay="7">7</button>
+                <button class="delay-btn" onclick="setDelay(8)" data-delay="8">8</button>
+                <button class="delay-btn" onclick="setDelay(9)" data-delay="9">9</button>
+                <button class="delay-btn" onclick="setDelay(10)" data-delay="10">10</button>
             </div>
         </div>
     </div>
@@ -572,6 +659,57 @@
     let dragChipEl = null;
     let floatingEl = null;
 
+    // 충동방지
+    let impulseEnabled = false;
+    let impulseDelay = 5;
+    let impulseTimer = null;
+
+    function toggleImpulse() {
+        impulseEnabled = !impulseEnabled;
+        document.getElementById('impulse-switch').classList.toggle('on', impulseEnabled);
+        document.getElementById('impulse-toggle').classList.toggle('active', impulseEnabled);
+        document.getElementById('delay-options').classList.toggle('show', impulseEnabled);
+    }
+
+    function setDelay(sec) {
+        impulseDelay = sec;
+        document.querySelectorAll('.delay-btn').forEach(b => {
+            b.classList.toggle('selected', parseInt(b.dataset.delay) === sec);
+        });
+    }
+
+    function applyImpulseDelay(chipsEl, countdownParent) {
+        if (!impulseEnabled) return;
+        chipsEl.classList.add('chips-hidden');
+
+        // 카운트다운 표시
+        const cdEl = document.createElement('div');
+        cdEl.className = 'delay-countdown';
+        cdEl.id = 'impulse-countdown';
+        countdownParent.insertBefore(cdEl, chipsEl);
+
+        let remaining = impulseDelay;
+        cdEl.textContent = `${remaining}초 후 보기가 나와요`;
+
+        impulseTimer = setInterval(() => {
+            remaining--;
+            if (remaining <= 0) {
+                clearInterval(impulseTimer);
+                impulseTimer = null;
+                cdEl.remove();
+                chipsEl.classList.remove('chips-hidden');
+            } else {
+                cdEl.textContent = `${remaining}초 후 보기가 나와요`;
+            }
+        }, 1000);
+    }
+
+    function clearImpulseTimer() {
+        if (impulseTimer) { clearInterval(impulseTimer); impulseTimer = null; }
+        const cd = document.getElementById('impulse-countdown');
+        if (cd) cd.remove();
+    }
+
     function startGame(range) {
         maxNum = range;
         nextExpected = 1;
@@ -631,6 +769,9 @@
 
         // TTS 초기화
         if (window.speechSynthesis) speechSynthesis.speak(new SpeechSynthesisUtterance(''));
+
+        // 충동방지
+        applyImpulseDelay(chipsEl, chipsEl.parentElement);
     }
 
     function bindDrag(chip, value) {
@@ -797,6 +938,7 @@
     }
 
     function goHome() {
+        clearImpulseTimer();
         if (floatingEl) { floatingEl.remove(); floatingEl = null; }
         dragging = false;
         document.getElementById('game-view').classList.add('hidden');
@@ -901,6 +1043,10 @@
             bindQuizDrag(chip, n);
             chipsEl.appendChild(chip);
         });
+
+        // 충동방지
+        clearImpulseTimer();
+        applyImpulseDelay(chipsEl, chipsEl.parentElement);
     }
 
     function bindQuizDrag(chip, value) {
@@ -1088,6 +1234,10 @@
             chip.addEventListener('click', () => handleFingerTap(chip, n));
             chipsEl.appendChild(chip);
         });
+
+        // 충동방지
+        clearImpulseTimer();
+        applyImpulseDelay(chipsEl, chipsEl.parentElement);
     }
 
     function handleFingerTap(chip, value) {
