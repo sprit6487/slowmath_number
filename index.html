@@ -1480,7 +1480,6 @@
         const cell = chipSize + gap;
         const cols = Math.max(1, Math.floor(areaW / cell));
         const rows = Math.ceil(count / cols);
-        const jitter = Math.max(0, gap - 2);
         const offsetX = Math.max(0, (areaW - cols * cell) / 2);
 
         const positions = [];
@@ -1488,8 +1487,8 @@
             const col = i % cols;
             const row = Math.floor(i / cols);
             positions.push({
-                x: offsetX + col * cell + Math.random() * jitter,
-                y: row * cell + Math.random() * jitter
+                x: offsetX + col * cell,
+                y: row * cell
             });
         }
         shuffle(positions);
