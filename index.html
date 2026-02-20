@@ -923,12 +923,12 @@
         // 흩뿌리기 영역 높이 계산
         const isTablet = window.innerWidth >= 768;
         const chipPx = isTablet ? 44 : 36;
-        const cellPad = Math.round(chipPx * 0.35);
-        const cellSize = chipPx + cellPad;
+        const gap = Math.round(chipPx * 0.3);
+        const cellSize = chipPx + gap;
         const areaW = chipsEl.offsetWidth || 500;
         const cols = Math.max(1, Math.floor(areaW / cellSize));
         const minRows = Math.ceil(nums.length / cols);
-        const totalRows = minRows + Math.max(1, Math.round(minRows * 0.35));
+        const totalRows = minRows + Math.max(1, Math.round(minRows * 0.15));
         const scatterH = totalRows * cellSize;
         chipsEl.style.minHeight = scatterH + 'px';
 
@@ -1478,11 +1478,12 @@
     }
 
     function scatterPositions(count, areaW, areaH, chipSize) {
-        const cellPad = Math.round(chipSize * 0.35);
-        const cell = chipSize + cellPad;
+        const gap = Math.round(chipSize * 0.3);
+        const cell = chipSize + gap;
+        const jitter = Math.round(gap * 0.4);
         const cols = Math.max(1, Math.floor(areaW / cell));
         const minRows = Math.ceil(count / cols);
-        const totalRows = minRows + Math.max(1, Math.round(minRows * 0.35));
+        const totalRows = minRows + Math.max(1, Math.round(minRows * 0.15));
         const totalCells = totalRows * cols;
 
         // 셀 인덱스를 섞어서 count개만 선택 → 빈 셀이 생겨 흩뿌린 느낌
@@ -1492,7 +1493,6 @@
         const chosen = indices.slice(0, count);
 
         const offsetX = Math.max(0, (areaW - cols * cell) / 2);
-        const jitter = Math.max(0, cellPad);
 
         return chosen.map(idx => {
             const col = idx % cols;
