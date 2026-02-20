@@ -336,6 +336,14 @@
         }
         .delay-btn.selected { border-color: #6BADE8; background: #6BADE8; color: white; }
         /* 충동방지: 보기 숨김 / 선택 잠금 */
+        /* 읽기 모드 선택 */
+        .counting-mode-btn {
+            border-color: #E8E2DA; background: white; color: #8C8070;
+        }
+        .counting-mode-btn.selected {
+            border-color: #6BADE8; background: #EEF6FD; color: #2E7FD9;
+        }
+
         .chips-hidden { visibility: hidden; }
         .chips-locked { pointer-events: none; opacity: 0.45; }
         .delay-countdown {
@@ -478,6 +486,18 @@
                     <span class="text-base">🔢</span>
                     <span class="text-sm font-semibold" style="color:#6B5F50;">숫자 순서 맞추기</span>
                     <span class="text-xs" style="color:#B8AD9E;">끌어서 빈칸 채우기</span>
+                </div>
+                <div class="grid grid-cols-2 gap-2 mb-2">
+                    <button onclick="setCountingMode('native')" data-cmode="native"
+                            class="counting-mode-btn selected rounded-xl py-2.5 px-3 text-center border-2 text-sm font-bold transition"
+                            style="cursor:pointer;">
+                        하나, 둘, 셋 …
+                    </button>
+                    <button onclick="setCountingMode('sino')" data-cmode="sino"
+                            class="counting-mode-btn rounded-xl py-2.5 px-3 text-center border-2 text-sm font-bold transition"
+                            style="cursor:pointer;">
+                        일, 이, 삼 …
+                    </button>
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <button onclick="startGame(10)"
@@ -754,6 +774,40 @@
     let dragChipEl = null;
     let floatingEl = null;
 
+    // 읽기 모드
+    let countingMode = 'native'; // 'native' = 하나둘셋, 'sino' = 일이삼
+
+    function setCountingMode(mode) {
+        countingMode = mode;
+        document.querySelectorAll('.counting-mode-btn').forEach(b => {
+            b.classList.toggle('selected', b.dataset.cmode === mode);
+        });
+    }
+
+    function nativeKorean(n) {
+        const ones = ['', '하나', '둘', '셋', '넷', '다섯', '여섯', '일곱', '여덟', '아홉'];
+        const tens = ['', '열', '스물', '서른', '마흔', '쉰'];
+        const t = Math.floor(n / 10);
+        const o = n % 10;
+        return tens[t] + ones[o];
+    }
+
+    function sinoKorean(n) {
+        const ones = ['', '일', '이', '삼', '사', '오', '육', '칠', '팔', '구'];
+        if (n <= 0) return '';
+        const t = Math.floor(n / 10);
+        const o = n % 10;
+        let result = '';
+        if (t >= 2) result += ones[t];
+        if (t >= 1) result += '십';
+        result += ones[o];
+        return result;
+    }
+
+    function countingWord(n) {
+        return countingMode === 'native' ? nativeKorean(n) : sinoKorean(n);
+    }
+
     // 음성
     let ttsEnabled = true;
     function toggleTTS() {
@@ -1003,7 +1057,7 @@
         } else {
             fb.textContent = '잘했어요!';
             fb.style.color = '#5BC886';
-            speak(String(value));
+            speak(countingWord(value));
             setTimeout(() => {
                 if (fb.textContent === '잘했어요!') {
                     fb.textContent = '';
