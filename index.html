@@ -847,9 +847,8 @@
         document.getElementById('quiz-hint').textContent = '숨은 숫자를 찾아서 빈칸에 놓아봐요';
         document.getElementById('quiz-hint').style.color = '#6BADE8';
 
-        // 범위에 따라 카드 수 / 숨김 수 결정
-        const cardCount = quizRange >= 30 ? 8 : 6;
-        const hideCount = quizRange >= 30 ? 4 : 3;
+        const cardCount = 8;
+        const hideCount = 4;
 
         const maxStart = quizRange - cardCount + 1;
         const start = Math.floor(Math.random() * maxStart) + 1;
@@ -874,7 +873,7 @@
         // 카드 렌더링
         const cardsEl = document.getElementById('quiz-cards');
         cardsEl.innerHTML = '';
-        cardsEl.classList.toggle('quiz-cards-8', cardCount === 8);
+        cardsEl.classList.add('quiz-cards-8');
         quizNumbers.forEach((n, i) => {
             const card = document.createElement('div');
             card.className = 'quiz-card';
@@ -967,8 +966,7 @@
 
                 const fb = document.getElementById('quiz-feedback');
 
-                const hideCount = quizRange >= 30 ? 4 : 3;
-                if (quizPlacedInRound >= hideCount) {
+                if (quizPlacedInRound >= 4) {
                     // 이 라운드 완성
                     if (quizFirstTryInRound) quizCorrect++;
                     document.getElementById('quiz-score').textContent = quizCorrect;
