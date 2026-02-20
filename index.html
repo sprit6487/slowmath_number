@@ -264,35 +264,17 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 180px;
+            min-height: 210px;
             margin-bottom: 8px;
         }
-        .finger-answer {
-            width: 72px; height: 72px;
-            border-radius: 16px;
-            border: 2.5px dashed #D0C8BC;
-            background: #FDFCFA;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.5rem; font-weight: 900;
-            color: #D0C8BC;
-            transition: all 0.2s;
+        .hand-image {
+            display: block;
+            max-height: 200px;
+            max-width: 260px;
             margin: 0 auto;
+            object-fit: contain;
         }
-        .finger-answer.drag-over {
-            border-color: #6BADE8; border-style: solid;
-            background: #EEF6FD;
-            transform: scale(1.08);
-        }
-        .finger-answer.filled {
-            border: 2.5px solid #5BC886;
-            background: #D4F5E0;
-            color: #1A7A3A;
-        }
-        .finger-answer.wrong {
-            border-color: #F07070;
-            background: #FDE8E8;
-            animation: shake 0.4s ease;
-        }
+        /* finger-answer 제거됨 (터치 선택 방식으로 변경) */
         .finger-chip {
             width: 56px; height: 56px;
             border-radius: 50%;
@@ -301,16 +283,22 @@
             display: flex; align-items: center; justify-content: center;
             font-size: 1.2rem; font-weight: 800;
             color: #4A4035;
-            cursor: grab;
-            touch-action: none;
+            cursor: pointer;
             user-select: none;
-            transition: transform 0.1s, box-shadow 0.1s, opacity 0.2s;
+            transition: transform 0.15s, box-shadow 0.15s, opacity 0.2s, border-color 0.15s, background 0.15s;
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
         }
-        .finger-chip:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
-        .finger-chip:active { cursor: grabbing; }
-        .finger-chip.dragging { opacity: 0.3; }
-        .finger-chip.placed { opacity: 0; pointer-events: none; transform: scale(0.5); }
+        .finger-chip:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.12); transform: scale(1.05); }
+        .finger-chip:active { transform: scale(0.95); }
+        .finger-chip.correct-tap {
+            border-color: #5BC886; background: #D4F5E0; color: #1A7A3A;
+            pointer-events: none; transform: scale(1.1);
+        }
+        .finger-chip.wrong-tap {
+            border-color: #F07070; background: #FDE8E8;
+            animation: shake 0.4s ease;
+        }
+        .finger-chip.disabled { opacity: 0.4; pointer-events: none; }
     </style>
 </head>
 <body>
@@ -530,16 +518,11 @@
         <!-- 손가락 표시 영역 -->
         <div id="finger-display" class="finger-display"></div>
 
-        <!-- 정답 슬롯 -->
-        <div class="flex justify-center mb-4">
-            <div id="finger-answer" class="finger-answer">?</div>
-        </div>
-
         <!-- 구분선 -->
         <div class="mb-3" style="border-top:1.5px solid #F0ECE6;"></div>
 
         <!-- 선택지 칩 -->
-        <p class="text-center text-xs mb-3" style="color:#D0C8BC;">알맞은 숫자를 끌어다 놓으세요</p>
+        <p class="text-center text-xs mb-3" style="color:#D0C8BC;">알맞은 숫자를 골라보세요</p>
         <div id="finger-chips" class="flex justify-center gap-3 flex-wrap"></div>
 
         <div id="finger-feedback" class="text-center h-8 text-base font-bold mt-4" style="color:#4A4035;"></div>
@@ -683,26 +666,16 @@
         return !document.getElementById('quiz-view').classList.contains('hidden');
     }
 
-    function isFingerMode() {
-        return !document.getElementById('finger-view').classList.contains('hidden');
-    }
-
     function moveHandler(x, y) {
         if (!dragging || !floatingEl) return;
         floatingEl.style.left = x + 'px';
         floatingEl.style.top = y + 'px';
-        if (isFingerMode()) highlightFingerTarget(x, y);
-        else if (isQuizMode()) highlightQuizTarget(x, y);
+        if (isQuizMode()) highlightQuizTarget(x, y);
         else highlightTarget(x, y);
     }
 
     function endHandler(x, y) {
         if (!dragging) return;
-
-        if (isFingerMode()) {
-            endFingerDrag(x, y);
-            return;
-        }
 
         if (isQuizMode()) {
             endQuizDrag(x, y);
@@ -1043,11 +1016,11 @@
         document.getElementById('r-range').textContent = `빈칸 1~${quizRange}`;
         document.getElementById('r-time').textContent = `${sec}초`;
         document.getElementById('r-wrong').textContent = `${quizWrong}번`;
-        speak(`다 풀었어요. ${quizCorrect}문제 맞혔어요.`);
+        speak(`다 풀었어요. ${nativeNum(quizCorrect)} 문제 맞혔어요.`);
     }
 
     // ── 손가락 개수 맞추기 모드 ──
-    const FINGER_TOTAL = 5;
+    let FINGER_TOTAL = 10;
     let fingerRound = 0;
     let fingerCorrect = 0;
     let fingerWrong = 0;
@@ -1055,6 +1028,7 @@
     let fingerRange = 5;
     let fingerAnswer = 0;
     let fingerFirstTry = true;
+    let fingerQuestions = [];
 
     function startFinger(range) {
         fingerRange = range;
@@ -1062,6 +1036,12 @@
         fingerCorrect = 0;
         fingerWrong = 0;
         fingerStartTime = Date.now();
+
+        // 각 숫자가 정확히 1회씩 출제 (겹침 없음)
+        fingerQuestions = [];
+        for (let i = 1; i <= fingerRange; i++) fingerQuestions.push(i);
+        shuffle(fingerQuestions);
+        FINGER_TOTAL = fingerQuestions.length;
 
         document.getElementById('start-view').classList.add('hidden');
         document.getElementById('result-view').classList.add('hidden');
@@ -1071,9 +1051,12 @@
         nextFingerRound();
     }
 
+    let fingerLocked = false; // 정답 후 다음 문제 전환 중 터치 방지
+
     function nextFingerRound() {
         fingerRound++;
         fingerFirstTry = true;
+        fingerLocked = false;
 
         document.getElementById('finger-label').textContent = `문제 ${fingerRound} / ${FINGER_TOTAL}`;
         document.getElementById('finger-progress').style.width = `${(fingerRound - 1) / FINGER_TOTAL * 100}%`;
@@ -1082,13 +1065,8 @@
         document.getElementById('finger-hint').textContent = '손가락이 몇 개일까요?';
         document.getElementById('finger-hint').style.color = '#6BADE8';
 
-        // 정답 슬롯 초기화
-        const answerEl = document.getElementById('finger-answer');
-        answerEl.textContent = '?';
-        answerEl.className = 'finger-answer';
-
-        // 랜덤 정답 생성
-        fingerAnswer = Math.floor(Math.random() * fingerRange) + 1;
+        // 미리 생성된 문제 목록에서 정답 가져오기
+        fingerAnswer = fingerQuestions[fingerRound - 1];
 
         // 손가락 렌더링
         document.getElementById('finger-display').innerHTML = getHandHTML(fingerAnswer);
@@ -1109,97 +1087,49 @@
             chip.className = 'finger-chip';
             chip.textContent = n;
             chip.dataset.num = n;
-            bindFingerDrag(chip, n);
+            chip.addEventListener('click', () => handleFingerTap(chip, n));
             chipsEl.appendChild(chip);
         });
     }
 
-    function bindFingerDrag(chip, value) {
-        chip.addEventListener('mousedown', e => {
-            e.preventDefault();
-            beginFingerDrag(chip, value, e.clientX, e.clientY);
-        });
-        chip.addEventListener('touchstart', e => {
-            e.preventDefault();
-            const t = e.touches[0];
-            beginFingerDrag(chip, value, t.clientX, t.clientY);
-        }, { passive: false });
-    }
+    function handleFingerTap(chip, value) {
+        if (fingerLocked) return;
 
-    function beginFingerDrag(chip, value, x, y) {
-        if (dragging) return;
-        dragging = true;
-        dragValue = value;
-        dragChipEl = chip;
-        chip.classList.add('dragging');
+        if (value === fingerAnswer) {
+            // 정답
+            fingerLocked = true;
+            chip.classList.add('correct-tap');
+            if (fingerFirstTry) fingerCorrect++;
 
-        floatingEl = document.createElement('div');
-        floatingEl.className = 'floating-num';
-        floatingEl.textContent = value;
-        floatingEl.style.left = x + 'px';
-        floatingEl.style.top = y + 'px';
-        document.body.appendChild(floatingEl);
+            document.getElementById('finger-score').textContent = fingerCorrect;
+            document.getElementById('finger-progress').style.width = `${fingerRound / FINGER_TOTAL * 100}%`;
 
-        highlightFingerTarget(x, y);
-    }
+            const fb = document.getElementById('finger-feedback');
+            fb.textContent = '정답이에요! 🎉';
+            fb.style.color = '#5BC886';
+            speak(`${nativeNum(fingerAnswer)}개, 정답이에요.`);
 
-    function highlightFingerTarget(x, y) {
-        const answer = document.getElementById('finger-answer');
-        answer.classList.remove('drag-over');
-        if (answer.classList.contains('filled')) return;
-        const r = answer.getBoundingClientRect();
-        if (x >= r.left && x <= r.right && y >= r.top && y <= r.bottom) {
-            answer.classList.add('drag-over');
-        }
-    }
+            // 나머지 칩 비활성화
+            document.querySelectorAll('#finger-chips .finger-chip').forEach(c => {
+                if (c !== chip) c.classList.add('disabled');
+            });
 
-    function endFingerDrag(x, y) {
-        const answer = document.getElementById('finger-answer');
-        answer.classList.remove('drag-over');
-
-        if (!answer.classList.contains('filled')) {
-            const r = answer.getBoundingClientRect();
-            if (x >= r.left && x <= r.right && y >= r.top && y <= r.bottom) {
-                if (dragValue === fingerAnswer) {
-                    // 정답
-                    answer.textContent = fingerAnswer;
-                    answer.classList.add('filled', 'pop-in');
-                    dragChipEl.classList.add('placed');
-                    if (fingerFirstTry) fingerCorrect++;
-
-                    document.getElementById('finger-score').textContent = fingerCorrect;
-                    document.getElementById('finger-progress').style.width = `${fingerRound / FINGER_TOTAL * 100}%`;
-
-                    const fb = document.getElementById('finger-feedback');
-                    fb.textContent = '정답이에요! 🎉';
-                    fb.style.color = '#5BC886';
-                    speak(`${fingerAnswer}개, 정답이에요.`);
-
-                    if (fingerRound >= FINGER_TOTAL) {
-                        setTimeout(showFingerResult, 1500);
-                    } else {
-                        setTimeout(nextFingerRound, 1300);
-                    }
-                } else {
-                    // 오답
-                    fingerWrong++;
-                    fingerFirstTry = false;
-                    answer.classList.add('wrong');
-                    setTimeout(() => answer.classList.remove('wrong'), 400);
-                    const fb = document.getElementById('finger-feedback');
-                    fb.textContent = '다시 세어볼까요?';
-                    fb.style.color = '#F07070';
-                    speak('다시 세어봐요.');
-                }
+            if (fingerRound >= FINGER_TOTAL) {
+                setTimeout(showFingerResult, 1500);
+            } else {
+                setTimeout(nextFingerRound, 1300);
             }
+        } else {
+            // 오답
+            fingerWrong++;
+            fingerFirstTry = false;
+            chip.classList.add('wrong-tap');
+            setTimeout(() => chip.classList.remove('wrong-tap'), 400);
+            const fb = document.getElementById('finger-feedback');
+            fb.textContent = '다시 세어볼까요?';
+            fb.style.color = '#F07070';
+            speak('다시 세어봐요.');
         }
-
-        // 정리
-        if (floatingEl) { floatingEl.remove(); floatingEl = null; }
-        if (dragChipEl) dragChipEl.classList.remove('dragging');
-        dragging = false;
-        dragValue = null;
-        dragChipEl = null;
     }
 
     function showFingerResult() {
@@ -1209,77 +1139,12 @@
         document.getElementById('r-range').textContent = `손가락 1~${fingerRange}`;
         document.getElementById('r-time').textContent = `${sec}초`;
         document.getElementById('r-wrong').textContent = `${fingerWrong}번`;
-        speak(`다 풀었어요. ${fingerCorrect}문제 맞혔어요.`);
+        speak(`다 풀었어요. ${nativeNum(fingerCorrect)} 문제 맞혔어요.`);
     }
 
-    // ── 손가락 SVG 생성 ──
+    // ── 손가락 SVG 생성 (사실적 일러스트) ──
     function getHandHTML(count) {
-        if (count <= 5) {
-            return `<div style="display:flex;justify-content:center;">${singleHandSVG(count, false)}</div>`;
-        } else {
-            return `<div style="display:flex;justify-content:center;align-items:center;gap:12px;">
-                ${singleHandSVG(5, true)}
-                <span style="font-size:1.8rem;font-weight:900;color:#D0C8BC;">+</span>
-                ${singleHandSVG(count - 5, false)}
-            </div>`;
-        }
-    }
-
-    function singleHandSVG(raised, mirror) {
-        // 손가락 올림 패턴: 1=검지, 2=검지+중지, 3=검지+중지+약지, 4=검지+중지+약지+소지, 5=전부
-        const isUp = [
-            raised >= 5,  // 엄지
-            raised >= 1,  // 검지
-            raised >= 2,  // 중지
-            raised >= 3,  // 약지
-            raised >= 4,  // 소지
-        ];
-
-        const w = mirror ? 120 : 160;
-        const h = mirror ? 150 : 200;
-
-        let svg = `<svg viewBox="0 0 120 150" width="${w}" height="${h}" fill="none" xmlns="http://www.w3.org/2000/svg"${mirror ? ' style="transform:scaleX(-1)"' : ''}>`;
-
-        // 손가락 정의: x위치, 너비, 올린높이 (소지, 약지, 중지, 검지 순 - 왼→오)
-        const fingerDefs = [
-            { x: 14, w: 16, upH: 44, idx: 4 },   // 소지
-            { x: 33, w: 17, upH: 52, idx: 3 },    // 약지
-            { x: 53, w: 17, upH: 58, idx: 2 },    // 중지
-            { x: 73, w: 17, upH: 50, idx: 1 },    // 검지
-        ];
-
-        const palmTop = 88;
-
-        // 손가락 그리기
-        fingerDefs.forEach(f => {
-            const up = isUp[f.idx];
-            const fh = up ? f.upH : 14;
-            const fy = palmTop - fh;
-            const fill = up ? '#FFD9B3' : '#F0E6D8';
-            const stroke = up ? '#E0A06A' : '#D8CEBF';
-
-            svg += `<rect x="${f.x}" y="${fy}" width="${f.w}" height="${fh + 10}" rx="8" fill="${fill}" stroke="${stroke}" stroke-width="2"/>`;
-            if (up) {
-                svg += `<rect x="${f.x + 3}" y="${fy + 2}" width="${f.w - 6}" height="6" rx="3" fill="#F5C9A0" opacity="0.6"/>`;
-            }
-        });
-
-        // 엄지 (오른쪽, 약간 기울임)
-        if (isUp[0]) {
-            svg += `<rect x="90" y="68" width="16" height="38" rx="8" fill="#FFD9B3" stroke="#E0A06A" stroke-width="2" transform="rotate(15 98 87)"/>`;
-        } else {
-            svg += `<rect x="90" y="82" width="16" height="18" rx="8" fill="#F0E6D8" stroke="#D8CEBF" stroke-width="2" transform="rotate(15 98 91)"/>`;
-        }
-
-        // 손바닥
-        svg += `<rect x="10" y="${palmTop}" width="95" height="52" rx="16" fill="#FFD9B3" stroke="#E0A06A" stroke-width="2"/>`;
-
-        // 손금 (미묘한 디테일)
-        svg += `<path d="M30 100 Q55 108 85 98" fill="none" stroke="#E8B888" stroke-width="1.2" opacity="0.5"/>`;
-        svg += `<path d="M25 112 Q50 118 80 110" fill="none" stroke="#E8B888" stroke-width="1" opacity="0.4"/>`;
-
-        svg += `</svg>`;
-        return svg;
+        return `<img src="images/${count}.png" alt="손가락 ${count}개" class="hand-image">`;
     }
 
     function scatterPositions(count, areaW, areaH, chipSize) {
@@ -1311,6 +1176,12 @@
             const j = Math.floor(Math.random() * (i + 1));
             [arr[i], arr[j]] = [arr[j], arr[i]];
         }
+    }
+
+    // 고유어 수사 (문제, 개 등 단위 앞에 사용)
+    function nativeNum(n) {
+        const w = ['', '한', '두', '세', '네', '다섯', '여섯', '일곱', '여덟', '아홉', '열'];
+        return w[n] || String(n);
     }
 
     function speak(text) {
