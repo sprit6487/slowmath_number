@@ -273,17 +273,17 @@
         }
         /* 충동방지 토글 */
         .impulse-toggle {
-            display: flex; align-items: center; gap: 10px;
-            padding: 12px 16px;
-            border-radius: 16px;
+            display: flex; align-items: center; gap: 9px;
+            padding: 11px 14px;
+            border-radius: 14px;
             border: 2px solid #E8E2DA;
             background: white;
             transition: border-color 0.2s, background 0.2s;
         }
         .impulse-toggle.active { border-color: #6BADE8; background: #EEF6FD; }
         .toggle-switch {
-            width: 44px; height: 24px;
-            border-radius: 12px;
+            width: 40px; height: 22px;
+            border-radius: 11px;
             background: #D0C8BC;
             position: relative;
             cursor: pointer;
@@ -294,49 +294,49 @@
         .toggle-switch::after {
             content: '';
             position: absolute;
-            width: 20px; height: 20px;
+            width: 18px; height: 18px;
             border-radius: 50%;
             background: white;
             top: 2px; left: 2px;
             transition: transform 0.2s;
             box-shadow: 0 1px 3px rgba(0,0,0,0.15);
         }
-        .toggle-switch.on::after { transform: translateX(20px); }
+        .toggle-switch.on::after { transform: translateX(18px); }
         .impulse-details {
             overflow: hidden;
             max-height: 0; opacity: 0;
             transition: max-height 0.3s, opacity 0.3s, margin 0.3s;
             margin-top: 0;
         }
-        .impulse-details.show { max-height: 200px; opacity: 1; margin-top: 10px; }
+        .impulse-details.show { max-height: 200px; opacity: 1; margin-top: 9px; }
         .impulse-mode-options {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
-            margin-bottom: 10px;
+            display: grid; grid-template-columns: 1fr 1fr; gap: 7px;
+            margin-bottom: 9px;
         }
         .impulse-mode-btn {
             display: flex; flex-direction: column; align-items: center;
-            padding: 10px 8px;
-            border-radius: 14px;
+            padding: 9px 7px;
+            border-radius: 13px;
             border: 2px solid #E8E2DA;
             background: white;
             cursor: pointer;
             transition: all 0.15s;
         }
         .impulse-mode-btn.selected { border-color: #6BADE8; background: #EEF6FD; }
-        .impulse-mode-icon { font-size: 1.2rem; margin-bottom: 2px; }
-        .impulse-mode-label { font-size: 0.8rem; font-weight: 700; color: #4A4035; }
-        .impulse-mode-desc { font-size: 0.65rem; color: #B8AD9E; margin-top: 1px; }
+        .impulse-mode-icon { font-size: 1.08rem; margin-bottom: 2px; }
+        .impulse-mode-label { font-size: 0.72rem; font-weight: 700; color: #4A4035; }
+        .impulse-mode-desc { font-size: 0.59rem; color: #B8AD9E; margin-top: 1px; }
         .delay-options {
             display: flex; gap: 4px;
             flex-wrap: wrap; justify-content: center;
         }
         .delay-btn {
-            min-width: 38px; height: 30px; padding: 0 6px;
-            border-radius: 15px;
+            min-width: 34px; height: 27px; padding: 0 5px;
+            border-radius: 14px;
             border: 2px solid #E8E2DA;
             background: white;
             display: flex; align-items: center; justify-content: center;
-            font-size: 0.75rem; font-weight: 700;
+            font-size: 0.68rem; font-weight: 700;
             color: #6B5F50;
             cursor: pointer;
             transition: all 0.15s;
@@ -553,9 +553,9 @@
 
     <!-- ══════════════ 시작 화면 ══════════════ -->
     <div id="start-view" class="flex flex-col flex-1">
-        <div class="text-center pt-4 pb-6">
-            <div class="inline-block mb-3">
-                <svg viewBox="0 0 120 100" width="120" height="100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <div class="text-center pt-2 pb-3">
+            <div class="inline-block mb-2">
+                <svg viewBox="0 0 120 100" width="90" height="75" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <ellipse cx="30" cy="72" rx="10" ry="6" fill="#F2DC8C" stroke="#3A9B6A" stroke-width="2" transform="rotate(-20 30 72)"/>
                     <ellipse cx="78" cy="76" rx="10" ry="6" fill="#F2DC8C" stroke="#3A9B6A" stroke-width="2" transform="rotate(15 78 76)"/>
                     <ellipse cx="28" cy="54" rx="9" ry="5.5" fill="#F2DC8C" stroke="#3A9B6A" stroke-width="2" transform="rotate(-10 28 54)"/>
@@ -578,13 +578,14 @@
                     <path d="M94 46 Q98 50 103 46" fill="none" stroke="#3A9B6A" stroke-width="1.5" stroke-linecap="round"/>
                 </svg>
             </div>
-            <h1 class="text-3xl font-black tracking-tight">
+            <h1 class="text-2xl font-black tracking-tight">
                 <span style="color:#2E7FD9;">느린</span><span style="color:#F0901E;">아이</span> <span style="color:#4A4035;">숫자</span>
             </h1>
-            <p class="text-sm mt-2" style="color:#B8AD9E;">숫자를 차례대로 놓아봐요</p>
         </div>
 
-        <div class="flex flex-col gap-5 flex-1">
+        <div style="height:12px;"></div>
+
+        <div class="flex flex-col gap-3 flex-1">
             <div>
                 <div class="flex items-center gap-2 mb-2 px-1">
                     <div class="icon-order">
@@ -595,7 +596,7 @@
                     <span class="text-lg font-bold" style="color:#6B5F50;">숫자 순서 맞추기</span>
                     <span class="text-xs" style="color:#B8AD9E;">끌어서 빈칸 채우기</span>
                 </div>
-                <div class="flex flex-col gap-1.5 mb-3">
+                <div class="flex flex-col gap-1 mb-2">
                     <div class="flex items-center gap-2">
                         <span class="text-xs font-semibold shrink-0" style="color:#B8AD9E; width:28px;">읽기</span>
                         <div class="flex flex-1 rounded-lg overflow-hidden border-2" style="border-color:#E8E2DA;">
@@ -630,25 +631,25 @@
                         </div>
                     </div>
                 </div>
-                <div class="grid grid-cols-2 gap-3">
+                <div class="grid grid-cols-2 gap-2">
                     <button onclick="startGame(10)"
-                            class="mode-card rounded-2xl p-4 text-left border-2" style="border-color:#E8E2DA; background:white;">
-                        <p class="text-lg font-bold" style="color:#4A4035;">1 ~ 10</p>
+                            class="mode-card rounded-xl p-3 text-left border-2" style="border-color:#E8E2DA; background:white;">
+                        <p class="text-base font-bold" style="color:#4A4035;">1 ~ 10</p>
                         <p class="text-xs mt-0.5" style="color:#B8AD9E;">한 줄 채우기</p>
                     </button>
                     <button onclick="startGame(20)"
-                            class="mode-card rounded-2xl p-4 text-left border-2" style="border-color:#E8E2DA; background:white;">
-                        <p class="text-lg font-bold" style="color:#4A4035;">1 ~ 20</p>
+                            class="mode-card rounded-xl p-3 text-left border-2" style="border-color:#E8E2DA; background:white;">
+                        <p class="text-base font-bold" style="color:#4A4035;">1 ~ 20</p>
                         <p class="text-xs mt-0.5" style="color:#B8AD9E;">두 줄 채우기</p>
                     </button>
                     <button onclick="startGame(30)"
-                            class="mode-card rounded-2xl p-4 text-left border-2" style="border-color:#E8E2DA; background:white;">
-                        <p class="text-lg font-bold" style="color:#4A4035;">1 ~ 30</p>
+                            class="mode-card rounded-xl p-3 text-left border-2" style="border-color:#E8E2DA; background:white;">
+                        <p class="text-base font-bold" style="color:#4A4035;">1 ~ 30</p>
                         <p class="text-xs mt-0.5" style="color:#B8AD9E;">세 줄 채우기</p>
                     </button>
                     <button onclick="startGame(50)"
-                            class="mode-card rounded-2xl p-4 text-left border-2" style="border-color:#E8E2DA; background:white;">
-                        <p class="text-lg font-bold" style="color:#4A4035;">1 ~ 50</p>
+                            class="mode-card rounded-xl p-3 text-left border-2" style="border-color:#E8E2DA; background:white;">
+                        <p class="text-base font-bold" style="color:#4A4035;">1 ~ 50</p>
                         <p class="text-xs mt-0.5" style="color:#B8AD9E;">다섯 줄 채우기</p>
                     </button>
                 </div>
@@ -666,25 +667,25 @@
                     <span class="text-lg font-bold" style="color:#6B5F50;">빈칸 맞추기</span>
                     <span class="text-xs" style="color:#B8AD9E;">숨은 숫자를 찾아요</span>
                 </div>
-                <div class="grid grid-cols-2 gap-3">
+                <div class="grid grid-cols-2 gap-2">
                     <button onclick="startQuiz(10)"
-                            class="mode-card rounded-2xl p-4 text-left border-2" style="border-color:#E8E2DA; background:white;">
-                        <p class="text-lg font-bold" style="color:#4A4035;">1 ~ 10</p>
+                            class="mode-card rounded-xl p-3 text-left border-2" style="border-color:#E8E2DA; background:white;">
+                        <p class="text-base font-bold" style="color:#4A4035;">1 ~ 10</p>
                         <p class="text-xs mt-0.5" style="color:#B8AD9E;">연속 8개 중 4개 숨김</p>
                     </button>
                     <button onclick="startQuiz(20)"
-                            class="mode-card rounded-2xl p-4 text-left border-2" style="border-color:#E8E2DA; background:white;">
-                        <p class="text-lg font-bold" style="color:#4A4035;">1 ~ 20</p>
+                            class="mode-card rounded-xl p-3 text-left border-2" style="border-color:#E8E2DA; background:white;">
+                        <p class="text-base font-bold" style="color:#4A4035;">1 ~ 20</p>
                         <p class="text-xs mt-0.5" style="color:#B8AD9E;">연속 8개 중 4개 숨김</p>
                     </button>
                     <button onclick="startQuiz(30)"
-                            class="mode-card rounded-2xl p-4 text-left border-2" style="border-color:#E8E2DA; background:white;">
-                        <p class="text-lg font-bold" style="color:#4A4035;">1 ~ 30</p>
+                            class="mode-card rounded-xl p-3 text-left border-2" style="border-color:#E8E2DA; background:white;">
+                        <p class="text-base font-bold" style="color:#4A4035;">1 ~ 30</p>
                         <p class="text-xs mt-0.5" style="color:#B8AD9E;">연속 8개 중 4개 숨김</p>
                     </button>
                     <button onclick="startQuiz(50)"
-                            class="mode-card rounded-2xl p-4 text-left border-2" style="border-color:#E8E2DA; background:white;">
-                        <p class="text-lg font-bold" style="color:#4A4035;">1 ~ 50</p>
+                            class="mode-card rounded-xl p-3 text-left border-2" style="border-color:#E8E2DA; background:white;">
+                        <p class="text-base font-bold" style="color:#4A4035;">1 ~ 50</p>
                         <p class="text-xs mt-0.5" style="color:#B8AD9E;">연속 8개 중 4개 숨김</p>
                     </button>
                 </div>
@@ -698,15 +699,15 @@
                     <span class="text-lg font-bold" style="color:#6B5F50;">손가락 개수 맞추기</span>
                     <span class="text-xs" style="color:#B8AD9E;">손가락을 세어봐요</span>
                 </div>
-                <div class="grid grid-cols-2 gap-3">
+                <div class="grid grid-cols-2 gap-2">
                     <button onclick="startFinger(5)"
-                            class="mode-card rounded-2xl p-4 text-left border-2" style="border-color:#E8E2DA; background:white;">
-                        <p class="text-lg font-bold" style="color:#4A4035;">1 ~ 5</p>
+                            class="mode-card rounded-xl p-3 text-left border-2" style="border-color:#E8E2DA; background:white;">
+                        <p class="text-base font-bold" style="color:#4A4035;">1 ~ 5</p>
                         <p class="text-xs mt-0.5" style="color:#B8AD9E;">한 손 세기</p>
                     </button>
                     <button onclick="startFinger(10)"
-                            class="mode-card rounded-2xl p-4 text-left border-2" style="border-color:#E8E2DA; background:white;">
-                        <p class="text-lg font-bold" style="color:#4A4035;">1 ~ 10</p>
+                            class="mode-card rounded-xl p-3 text-left border-2" style="border-color:#E8E2DA; background:white;">
+                        <p class="text-base font-bold" style="color:#4A4035;">1 ~ 10</p>
                         <p class="text-xs mt-0.5" style="color:#B8AD9E;">두 손 세기</p>
                     </button>
                 </div>
@@ -716,22 +717,22 @@
 
             <!-- 음성 설정 -->
             <div>
-                <div class="impulse-toggle" id="tts-toggle" onclick="toggleTTS()" style="margin-bottom: 10px;">
+                <div class="impulse-toggle" id="tts-toggle" onclick="toggleTTS()">
                     <div class="toggle-switch on" id="tts-switch"></div>
                     <div>
-                        <p class="text-sm font-semibold" style="color:#4A4035;">음성</p>
-                        <p class="text-xs" style="color:#B8AD9E;">정답/오답 음성 안내</p>
+                        <p style="font-size:0.81rem; font-weight:600; color:#4A4035;">음성</p>
+                        <p style="font-size:0.68rem; color:#B8AD9E;">정답/오답 음성 안내</p>
                     </div>
                 </div>
             </div>
 
             <!-- 충동방지 설정 -->
-            <div>
+            <div style="margin-top: -6px;">
                 <div class="impulse-toggle" id="impulse-toggle" onclick="toggleImpulse()">
                     <div class="toggle-switch" id="impulse-switch"></div>
                     <div>
-                        <p class="text-sm font-semibold" style="color:#4A4035;">충동방지</p>
-                        <p class="text-xs" style="color:#B8AD9E;">생각할 시간을 줘요</p>
+                        <p style="font-size:0.81rem; font-weight:600; color:#4A4035;">충동방지</p>
+                        <p style="font-size:0.68rem; color:#B8AD9E;">생각할 시간을 줘요</p>
                     </div>
                 </div>
                 <div class="impulse-details" id="impulse-details">
