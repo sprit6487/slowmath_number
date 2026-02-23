@@ -259,17 +259,26 @@
         }
 
         /* 빈칸 맞추기 카드 */
+        #quiz-cards {
+            display: grid !important;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            justify-items: center;
+        }
+        #quiz-cards.quiz-cards-8 {
+            grid-template-columns: repeat(4, 1fr);
+        }
         .quiz-card {
-            width: 72px; height: 72px;
+            width: 100%; max-width: 72px;
+            aspect-ratio: 1;
             border-radius: 16px;
             display: flex; align-items: center; justify-content: center;
             font-size: 1.5rem; font-weight: 900;
             user-select: none;
             transition: all 0.2s;
-            flex-shrink: 0;
         }
         .quiz-cards-8 .quiz-card {
-            width: 58px; height: 58px;
+            max-width: 58px;
             font-size: 1.25rem;
             border-radius: 14px;
         }
@@ -330,7 +339,7 @@
             background: #FDFCFA;
             transition: border-color 0.2s, background 0.2s;
         }
-        .impulse-toggle.active { border-color: #6BADE8; background: #F5FAFF; }
+        .impulse-toggle.active { border-color: #C4AA82; background: #FAF5EE; }
         .toggle-switch {
             width: 40px; height: 22px;
             border-radius: 11px;
@@ -340,7 +349,7 @@
             transition: background 0.2s;
             flex-shrink: 0;
         }
-        .toggle-switch.on { background: #6BADE8; }
+        .toggle-switch.on { background: #5BC886; }
         .toggle-switch::after {
             content: '';
             position: absolute;
@@ -372,7 +381,7 @@
             cursor: pointer;
             transition: all 0.15s;
         }
-        .impulse-mode-btn.selected { border-color: #6BADE8; background: #EEF6FD; }
+        .impulse-mode-btn.selected { border-color: #C4AA82; background: #FAF5EE; }
         .impulse-mode-icon { font-size: 1.08rem; margin-bottom: 2px; }
         .impulse-mode-label { font-size: 0.72rem; font-weight: 700; color: #4A4035; }
         .impulse-mode-desc { font-size: 0.59rem; color: #B8AD9E; margin-top: 1px; }
@@ -391,14 +400,14 @@
             cursor: pointer;
             transition: all 0.15s;
         }
-        .delay-btn.selected { border-color: #6BADE8; background: #6BADE8; color: white; }
+        .delay-btn.selected { border-color: #C4AA82; background: #FAF5EE; color: #7B6545; }
         /* 충동방지: 보기 숨김 / 선택 잠금 */
         /* 읽기 모드 선택 */
         .counting-mode-btn {
             background: white; color: #8C8070; border: none;
         }
         .counting-mode-btn.selected {
-            background: #EEF6FD; color: #2E7FD9;
+            background: #FAF5EE; color: #7B6545;
         }
 
         /* 모드 아이콘 애니메이션 */
@@ -485,6 +494,39 @@
             90%, 100% { opacity: 0; }
         }
 
+        /* 전체 빈칸 채우기: 힌트 2개 + 나머지 채우기 */
+        .icon-fill {
+            width: 72px; height: 36px;
+            display: inline-flex; align-items: center; gap: 4px;
+            flex-shrink: 0;
+        }
+        .icon-fill .fb {
+            width: 20px; height: 28px; border-radius: 5px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 10px; font-weight: 900;
+            flex-shrink: 0; position: relative; overflow: hidden;
+        }
+        .icon-fill .fb.fb-hint {
+            background: #FFF3E0; border: 1.5px solid #FFB74D; color: #E65100;
+        }
+        .icon-fill .fb.fb-empty {
+            border: 1.5px dashed #D0C8BC;
+        }
+        .icon-fill .fb.fb-empty .fb-num {
+            position: absolute; inset: 0;
+            display: flex; align-items: center; justify-content: center;
+            background: #E8F5E9; border-radius: 3px;
+            font-size: 10px; font-weight: 900; color: #388E3C;
+        }
+        .icon-fill .fb:nth-child(1) .fb-num { animation: fillDrop 3s ease infinite; }
+        .icon-fill .fb:nth-child(3) .fb-num { animation: fillDrop 3s ease 0.5s infinite; }
+        .icon-fill .fb:nth-child(4) .fb-num { animation: fillDrop 3s ease 1s infinite; }
+        @keyframes fillDrop {
+            0%, 15% { opacity: 0; transform: translateY(-10px) scale(0.7); }
+            25%, 65% { opacity: 1; transform: translateY(0) scale(1); }
+            78%, 100% { opacity: 0; transform: translateY(0) scale(1); }
+        }
+
         .chips-hidden { visibility: hidden; }
         .chips-locked { pointer-events: none; opacity: 0.45; }
 
@@ -495,9 +537,9 @@
             margin: 0 auto 12px;
             padding: 14px 0;
             border-radius: 14px;
-            border: 2px solid #6BADE8;
-            background: #EEF6FD;
-            color: #2E7FD9;
+            border: 2px solid #C4AA82;
+            background: #FAF5EE;
+            color: #7B6545;
             font-family: 'Noto Sans KR', sans-serif;
             font-size: 1rem;
             font-weight: 700;
@@ -506,14 +548,14 @@
             text-align: center;
         }
         .reveal-btn:active {
-            background: #D9EDFC;
+            background: #F0E6D6;
             transform: scale(0.98);
         }
 
         .delay-countdown {
             text-align: center;
             font-size: 1.5rem; font-weight: 900;
-            color: #6BADE8;
+            color: #C4AA82;
             padding: 16px 0;
             animation: pulse-count 1s ease infinite;
         }
@@ -527,8 +569,8 @@
             .app { padding: 16px 10px; }
             .slot { border-radius: 8px; font-size: 0.9rem; }
             .num-chip { width: 29px; height: 29px; font-size: 0.65rem; }
-            .quiz-card { width: 56px; height: 56px; font-size: 1.15rem; border-radius: 12px; }
-            .quiz-cards-8 .quiz-card { width: 44px; height: 44px; font-size: 1rem; border-radius: 10px; }
+            .quiz-card { max-width: 56px; font-size: 1.15rem; border-radius: 12px; }
+            .quiz-cards-8 .quiz-card { max-width: 44px; font-size: 1rem; border-radius: 10px; }
             .quiz-chip { width: 48px; height: 48px; font-size: 1.05rem; }
             .floating-num { width: 36px; height: 36px; font-size: 0.78rem; }
         }
@@ -557,8 +599,8 @@
             .slot { border-radius: 14px; font-size: 1.3rem; border-width: 3px; }
             .num-chip { width: 42px; height: 42px; font-size: 0.91rem; }
             .floating-num { width: 47px; height: 47px; font-size: 1.04rem; border-radius: 12px; }
-            .quiz-card { width: 80px; height: 80px; font-size: 1.7rem; border-radius: 18px; }
-            .quiz-cards-8 .quiz-card { width: 72px; height: 72px; font-size: 1.4rem; border-radius: 16px; }
+            .quiz-card { max-width: 80px; font-size: 1.7rem; border-radius: 18px; }
+            .quiz-cards-8 .quiz-card { max-width: 72px; font-size: 1.4rem; border-radius: 16px; }
             .quiz-chip { width: 68px; height: 68px; font-size: 1.4rem; }
             #quiz-chips { gap: 16px !important; }
             .impulse-toggle { padding: 16px 20px; border-radius: 20px; }
@@ -572,8 +614,8 @@
             .mode-card p:first-child { font-size: 1.6rem !important; }
             .slot { font-size: 1.4rem; }
             .num-chip { width: 47px; height: 47px; font-size: 0.98rem; }
-            .quiz-card { width: 90px; height: 90px; font-size: 1.9rem; }
-            .quiz-cards-8 .quiz-card { width: 80px; height: 80px; font-size: 1.55rem; }
+            .quiz-card { max-width: 90px; font-size: 1.9rem; }
+            .quiz-cards-8 .quiz-card { max-width: 80px; font-size: 1.55rem; }
             .quiz-chip { width: 76px; height: 76px; font-size: 1.55rem; }
         }
     </style>
@@ -694,7 +736,7 @@
                         <div class="ib-card ib-empty"><span class="ib-q">?</span><span class="ib-ans">2</span></div>
                         <div class="ib-card ib-fixed">3</div>
                     </div>
-                    <span class="game-section-title">빈칸 맞추기</span>
+                    <span class="game-section-title">부분 빈칸 채우기</span>
                     <span class="game-section-desc">숨은 숫자를 찾아요</span>
                 </div>
                 <div class="grid grid-cols-3 gap-2">
@@ -727,6 +769,48 @@
                             class="mode-card rounded-xl p-3 text-left border-2" style="border-color:#E8E2DA; background:white;">
                         <p class="text-base font-bold" style="color:#4A4035;">1 부터 100</p>
                         <p class="text-xs mt-0.5" style="color:#B8AD9E;">8개 중 4개 숨김</p>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 전체 빈칸 채우기 -->
+            <div class="game-section">
+                <div class="game-section-header">
+                    <div class="icon-fill">
+                        <div class="fb fb-empty"><span class="fb-num">1</span></div>
+                        <div class="fb fb-hint">2</div>
+                        <div class="fb fb-empty"><span class="fb-num">3</span></div>
+                        <div class="fb fb-empty"><span class="fb-num">4</span></div>
+                        <div class="fb fb-hint">5</div>
+                    </div>
+                    <span class="game-section-title">전체 빈칸 채우기</span>
+                    <span class="game-section-desc">힌트를 보고 나머지를 채워요</span>
+                </div>
+                <div class="grid grid-cols-3 gap-2">
+                    <button onclick="startFillGame(5)" data-range="5"
+                            class="mode-card rounded-xl p-3 text-left border-2" style="border-color:#E8E2DA; background:white;">
+                        <p class="text-base font-bold" style="color:#4A4035;">1 부터 5</p>
+                        <p class="text-xs mt-0.5" style="color:#B8AD9E;">2개 힌트</p>
+                    </button>
+                    <button onclick="startFillGame(10)" data-range="10"
+                            class="mode-card rounded-xl p-3 text-left border-2" style="border-color:#E8E2DA; background:white;">
+                        <p class="text-base font-bold" style="color:#4A4035;">1 부터 10</p>
+                        <p class="text-xs mt-0.5" style="color:#B8AD9E;">3개 힌트</p>
+                    </button>
+                    <button onclick="startFillGame(20)" data-range="20"
+                            class="mode-card rounded-xl p-3 text-left border-2" style="border-color:#E8E2DA; background:white;">
+                        <p class="text-base font-bold" style="color:#4A4035;">1 부터 20</p>
+                        <p class="text-xs mt-0.5" style="color:#B8AD9E;">6개 힌트</p>
+                    </button>
+                    <button onclick="startFillGame(30)" data-range="30"
+                            class="mode-card rounded-xl p-3 text-left border-2" style="border-color:#E8E2DA; background:white;">
+                        <p class="text-base font-bold" style="color:#4A4035;">1 부터 30</p>
+                        <p class="text-xs mt-0.5" style="color:#B8AD9E;">9개 힌트</p>
+                    </button>
+                    <button onclick="startFillGame(50)" data-range="50"
+                            class="mode-card rounded-xl p-3 text-left border-2" style="border-color:#E8E2DA; background:white;">
+                        <p class="text-base font-bold" style="color:#4A4035;">1 부터 50</p>
+                        <p class="text-xs mt-0.5" style="color:#B8AD9E;">15개 힌트</p>
                     </button>
                 </div>
             </div>
@@ -841,7 +925,7 @@
         </p>
 
         <!-- 카드 줄 -->
-        <div id="quiz-cards" class="flex justify-center gap-2 mb-8"></div>
+        <div id="quiz-cards" class="mb-8"></div>
 
         <!-- 구분선 -->
         <div class="mb-4" style="border-top:1.5px solid #F0ECE6;"></div>
@@ -884,7 +968,7 @@
             </button>
             <button onclick="replay()"
                     class="flex-1 py-3.5 rounded-2xl font-bold text-sm border-2 transition hover:opacity-90 active:scale-[0.98]"
-                    style="border-color:#6BADE8; color:#2E7FD9; background:#EEF6FD;">
+                    style="border-color:#C4AA82; color:#7B6545; background:#FAF5EE;">
                 다시 하기
             </button>
         </div>
@@ -894,7 +978,8 @@
 <script>
     let maxNum = 10;
     let nextExpected = 1;
-    let lastMode = null;  // 'game', 'quiz'
+    let lastMode = null;  // 'game', 'quiz', 'fill'
+    let fillTotal = 0;    // fill 모드: 사용자가 채울 칸 수
     let lastRange = 10;
     let placedCount = 0;
     let wrongCount = 0;
@@ -1131,6 +1216,99 @@
         applyImpulseDelay(chipsEl, chipsEl.parentElement);
     }
 
+    // ── 전체 빈칸 채우기 모드 ──
+    const FILL_HINTS = { 5: 2, 10: 3, 20: 6, 30: 9, 50: 15 };
+
+    function startFillGame(range) {
+        lastMode = 'fill';
+        lastRange = range;
+        maxNum = range;
+        const hintCount = FILL_HINTS[range] || Math.round(range * 0.3);
+        fillTotal = maxNum - hintCount;
+        placedCount = 0;
+        wrongCount = 0;
+        startTime = Date.now();
+
+        document.getElementById('start-view').classList.add('hidden');
+        document.getElementById('result-view').classList.add('hidden');
+        document.getElementById('game-view').classList.remove('hidden');
+
+        document.getElementById('game-label').textContent = `1 ~ ${maxNum} (${hintCount}개 힌트)`;
+        document.getElementById('feedback').textContent = '';
+        updateProgress();
+
+        // 슬롯 생성
+        const slotsEl = document.getElementById('slots');
+        slotsEl.innerHTML = '';
+        const gridCols = maxNum <= 5 ? 5 : 10;
+        slotsEl.style.gridTemplateColumns = `repeat(${gridCols}, 1fr)`;
+        slotsEl.style.fontSize = maxNum >= 100 ? '0.7rem' : '';
+
+        // 미리 채울 숫자를 랜덤 선택
+        const allNums = [];
+        for (let i = 1; i <= maxNum; i++) allNums.push(i);
+        const shuffled = [...allNums];
+        shuffle(shuffled);
+        const prefilledSet = new Set(shuffled.slice(0, hintCount));
+
+        for (let idx = 0; idx < maxNum; idx++) {
+            const num = idx + 1;
+            const slot = document.createElement('div');
+            slot.className = 'slot';
+            slot.dataset.num = num;
+            if (prefilledSet.has(num)) {
+                slot.textContent = num;
+                slot.classList.add('filled');
+                slot.style.fontSize = '1.25rem';
+                slot.style.background = '#E8F5E9';
+                slot.style.color = '#388E3C';
+            } else if (ghostMode) {
+                const ghost = document.createElement('span');
+                ghost.className = 'ghost-num';
+                ghost.textContent = num;
+                slot.appendChild(ghost);
+            }
+            slotsEl.appendChild(slot);
+        }
+
+        // 나머지 숫자만 칩으로 생성
+        const chipNums = allNums.filter(n => !prefilledSet.has(n));
+        shuffle(chipNums);
+
+        const chipsEl = document.getElementById('chips');
+        chipsEl.innerHTML = '';
+        const isTablet = window.innerWidth >= 768;
+        const chipPx = isTablet ? 44 : 36;
+        const gap = Math.round(chipPx * 0.3);
+        const cellSize = chipPx + gap;
+        const areaW = chipsEl.offsetWidth || 500;
+        const cols = Math.max(1, Math.floor(areaW / cellSize));
+        const minRows = Math.ceil(chipNums.length / cols);
+        const totalRows = minRows + Math.max(1, Math.round(minRows * 0.15));
+        const scatterH = totalRows * cellSize;
+        chipsEl.style.minHeight = scatterH + 'px';
+
+        const positions = scatterPositions(chipNums.length, areaW, scatterH, chipPx);
+
+        chipNums.forEach((n, idx) => {
+            const chip = document.createElement('div');
+            chip.className = 'num-chip';
+            chip.textContent = n;
+            chip.dataset.num = n;
+            chip.style.left = positions[idx].x + 'px';
+            chip.style.top = positions[idx].y + 'px';
+            bindDrag(chip, n);
+            chipsEl.appendChild(chip);
+        });
+
+        updateHint();
+
+        if (window.speechSynthesis) speechSynthesis.speak(new SpeechSynthesisUtterance(''));
+        setTimeout(() => speak('힌트를 보고 나머지를 채워봐요.'), 100);
+
+        applyImpulseDelay(chipsEl, chipsEl.parentElement);
+    }
+
     function bindDrag(chip, value) {
         chip.addEventListener('mousedown', e => {
             e.preventDefault();
@@ -1186,22 +1364,37 @@
 
         if (target && !target.classList.contains('filled')) {
             const slotNum = parseInt(target.dataset.num);
-            if (dragValue === slotNum && dragValue === nextExpected) {
-                // 정답
-                placeNumber(target, dragValue);
-            } else {
-                // 오답
-                wrongCount++;
-                target.classList.add('wrong');
-                setTimeout(() => target.classList.remove('wrong'), 400);
-                const fb = document.getElementById('feedback');
-                if (dragValue !== nextExpected) {
-                    fb.textContent = `${nextExpected}을 먼저 놓아야 해요`;
+
+            if (lastMode === 'fill') {
+                // fill 모드: 순서 무관, 숫자가 슬롯과 일치하면 정답
+                if (dragValue === slotNum) {
+                    placeNumber(target, dragValue);
                 } else {
+                    wrongCount++;
+                    target.classList.add('wrong');
+                    setTimeout(() => target.classList.remove('wrong'), 400);
+                    const fb = document.getElementById('feedback');
                     fb.textContent = '이 칸은 다른 숫자 자리예요';
+                    fb.style.color = '#F07070';
+                    speak('다시 해봐요.');
                 }
-                fb.style.color = '#F07070';
-                speak('다시 해봐요.');
+            } else {
+                // game 모드: 순서대로만 놓을 수 있음
+                if (dragValue === slotNum && dragValue === nextExpected) {
+                    placeNumber(target, dragValue);
+                } else {
+                    wrongCount++;
+                    target.classList.add('wrong');
+                    setTimeout(() => target.classList.remove('wrong'), 400);
+                    const fb = document.getElementById('feedback');
+                    if (dragValue !== nextExpected) {
+                        fb.textContent = `${nextExpected}을 먼저 놓아야 해요`;
+                    } else {
+                        fb.textContent = '이 칸은 다른 숫자 자리예요';
+                    }
+                    fb.style.color = '#F07070';
+                    speak('다시 해봐요.');
+                }
             }
         }
 
@@ -1223,17 +1416,20 @@
         dragChipEl.classList.add('placed');
 
         placedCount++;
-        if (reverseMode) {
-            nextExpected--;
-        } else {
-            nextExpected++;
+        if (lastMode !== 'fill') {
+            if (reverseMode) {
+                nextExpected--;
+            } else {
+                nextExpected++;
+            }
         }
         updateProgress();
         updateHint();
 
         const fb = document.getElementById('feedback');
+        const totalTarget = lastMode === 'fill' ? fillTotal : maxNum;
 
-        if (placedCount >= maxNum) {
+        if (placedCount >= totalTarget) {
             fb.textContent = '완성! 🎉';
             fb.style.color = '#5BC886';
             speak('다 맞혔어요! 정말 잘했어요.');
@@ -1274,15 +1470,21 @@
     }
 
     function updateProgress() {
-        document.getElementById('placed-label').textContent = `${placedCount} / ${maxNum}`;
-        document.getElementById('progress').style.width = `${(placedCount / maxNum) * 100}%`;
+        const total = lastMode === 'fill' ? fillTotal : maxNum;
+        document.getElementById('placed-label').textContent = `${placedCount} / ${total}`;
+        document.getElementById('progress').style.width = `${(placedCount / total) * 100}%`;
     }
 
     function updateHint() {
         const hint = document.getElementById('hint-text');
-        if (placedCount >= maxNum) {
+        const total = lastMode === 'fill' ? fillTotal : maxNum;
+        if (placedCount >= total) {
             hint.textContent = '완성!';
             hint.style.color = '#5BC886';
+        } else if (lastMode === 'fill') {
+            const remaining = fillTotal - placedCount;
+            hint.textContent = `${remaining}개 남았어요`;
+            hint.style.color = '#C4AA82';
         } else {
             const direction = reverseMode ? '(역순) ' : '';
             hint.textContent = `${direction}다음 숫자: ${nextExpected}`;
@@ -1304,6 +1506,7 @@
         document.getElementById('result-view').classList.add('hidden');
         if (lastMode === 'game') startGame(lastRange);
         else if (lastMode === 'quiz') startQuiz(lastRange);
+        else if (lastMode === 'fill') startFillGame(lastRange);
         else goHome();
     }
 
