@@ -256,21 +256,6 @@
         .quiz-chip.dragging { opacity: 0.3; }
         .quiz-chip.placed { opacity: 0; pointer-events: none; transform: scale(0.5); }
 
-        /* 손가락 개수 맞추기 */
-        .finger-display {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 210px;
-            margin-bottom: 8px;
-        }
-        .hand-image {
-            display: block;
-            max-height: 200px;
-            max-width: 260px;
-            margin: 0 auto;
-            object-fit: contain;
-        }
         /* 충동방지 토글 */
         .impulse-toggle {
             display: flex; align-items: center; gap: 9px;
@@ -434,22 +419,32 @@
             50%, 85% { opacity: 1; }
             90%, 100% { opacity: 0; }
         }
-        /* 손가락: 이모지 + 물음표 펄스 */
-        .icon-finger-emoji {
-            display: inline-flex; align-items: center; gap: 1px;
-            flex-shrink: 0; font-size: 14px; line-height: 1;
-        }
-        .icon-finger-emoji .fq {
-            font-size: 10px; font-weight: 900; color: #6BADE8;
-            animation: fqPulse 1.5s ease infinite;
-        }
-        @keyframes fqPulse {
-            0%, 100% { opacity: 0.4; transform: scale(0.9); }
-            50% { opacity: 1; transform: scale(1.1); }
-        }
 
         .chips-hidden { visibility: hidden; }
         .chips-locked { pointer-events: none; opacity: 0.45; }
+
+        .reveal-btn {
+            display: block;
+            width: 100%;
+            max-width: 320px;
+            margin: 0 auto 12px;
+            padding: 14px 0;
+            border-radius: 14px;
+            border: 2px solid #6BADE8;
+            background: #EEF6FD;
+            color: #2E7FD9;
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.15s;
+            text-align: center;
+        }
+        .reveal-btn:active {
+            background: #D9EDFC;
+            transform: scale(0.98);
+        }
+
         .delay-countdown {
             text-align: center;
             font-size: 1.5rem; font-weight: 900;
@@ -461,30 +456,6 @@
             0%, 100% { transform: scale(1); opacity: 1; }
             50% { transform: scale(1.15); opacity: 0.7; }
         }
-        .finger-chip {
-            width: 56px; height: 56px;
-            border-radius: 50%;
-            border: 2.5px solid #E8E2DA;
-            background: white;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.2rem; font-weight: 800;
-            color: #4A4035;
-            cursor: pointer;
-            user-select: none;
-            transition: transform 0.15s, box-shadow 0.15s, opacity 0.2s, border-color 0.15s, background 0.15s;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        }
-        .finger-chip:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.12); transform: scale(1.05); }
-        .finger-chip:active { transform: scale(0.95); }
-        .finger-chip.correct-tap {
-            border-color: #5BC886; background: #D4F5E0; color: #1A7A3A;
-            pointer-events: none; transform: scale(1.1);
-        }
-        .finger-chip.wrong-tap {
-            border-color: #F07070; background: #FDE8E8;
-            animation: shake 0.4s ease;
-        }
-        .finger-chip.disabled { opacity: 0.4; pointer-events: none; }
 
         /* ── 반응형: 모바일 (기본값 강화) ── */
         @media (max-width: 374px) {
@@ -494,10 +465,7 @@
             .quiz-card { width: 56px; height: 56px; font-size: 1.15rem; border-radius: 12px; }
             .quiz-cards-8 .quiz-card { width: 44px; height: 44px; font-size: 1rem; border-radius: 10px; }
             .quiz-chip { width: 48px; height: 48px; font-size: 1.05rem; }
-            .finger-chip { width: 48px; height: 48px; font-size: 1.05rem; }
             .floating-num { width: 36px; height: 36px; font-size: 0.78rem; }
-            .hand-image { max-height: 160px; max-width: 200px; }
-            .finger-display { min-height: 170px; }
         }
 
         /* ── 반응형: 태블릿 (768px+) ── */
@@ -522,10 +490,6 @@
             .quiz-card { width: 80px; height: 80px; font-size: 1.7rem; border-radius: 18px; }
             .quiz-cards-8 .quiz-card { width: 72px; height: 72px; font-size: 1.4rem; border-radius: 16px; }
             .quiz-chip { width: 68px; height: 68px; font-size: 1.4rem; }
-            .finger-display { min-height: 300px; }
-            .hand-image { max-height: 280px; max-width: 360px; }
-            .finger-chip { width: 72px; height: 72px; font-size: 1.5rem; }
-            #finger-chips { gap: 16px !important; }
             #quiz-chips { gap: 16px !important; }
             .impulse-toggle { padding: 16px 20px; border-radius: 20px; }
             .delay-btn { min-width: 44px; height: 36px; font-size: 0.85rem; }
@@ -541,9 +505,6 @@
             .quiz-card { width: 90px; height: 90px; font-size: 1.9rem; }
             .quiz-cards-8 .quiz-card { width: 80px; height: 80px; font-size: 1.55rem; }
             .quiz-chip { width: 76px; height: 76px; font-size: 1.55rem; }
-            .finger-display { min-height: 360px; }
-            .hand-image { max-height: 340px; max-width: 420px; }
-            .finger-chip { width: 84px; height: 84px; font-size: 1.7rem; }
         }
     </style>
 </head>
@@ -691,28 +652,6 @@
                 </div>
             </div>
 
-            <div style="border-top:1.5px solid #F0ECE6;"></div>
-            <!-- 손가락 개수 맞추기 모드 -->
-            <div>
-                <div class="flex items-center gap-2 mb-2 px-1">
-                    <div class="icon-finger-emoji">✌️<span class="fq">?</span></div>
-                    <span class="text-lg font-bold" style="color:#6B5F50;">손가락 개수 맞추기</span>
-                    <span class="text-xs" style="color:#B8AD9E;">손가락을 세어봐요</span>
-                </div>
-                <div class="grid grid-cols-2 gap-2">
-                    <button onclick="startFinger(5)"
-                            class="mode-card rounded-xl p-3 text-left border-2" style="border-color:#E8E2DA; background:white;">
-                        <p class="text-base font-bold" style="color:#4A4035;">1 부터 5</p>
-                        <p class="text-xs mt-0.5" style="color:#B8AD9E;">한 손 세기</p>
-                    </button>
-                    <button onclick="startFinger(10)"
-                            class="mode-card rounded-xl p-3 text-left border-2" style="border-color:#E8E2DA; background:white;">
-                        <p class="text-base font-bold" style="color:#4A4035;">1 부터 10</p>
-                        <p class="text-xs mt-0.5" style="color:#B8AD9E;">두 손 세기</p>
-                    </button>
-                </div>
-            </div>
-
             <div style="margin-top: auto; border-top:1.5px solid #F0ECE6;"></div>
 
             <!-- 음성 설정 -->
@@ -728,19 +667,19 @@
 
             <!-- 충동방지 설정 -->
             <div style="margin-top: -6px;">
-                <div class="impulse-toggle" id="impulse-toggle" onclick="toggleImpulse()">
-                    <div class="toggle-switch" id="impulse-switch"></div>
+                <div class="impulse-toggle active" id="impulse-toggle" onclick="toggleImpulse()">
+                    <div class="toggle-switch on" id="impulse-switch"></div>
                     <div>
                         <p style="font-size:0.81rem; font-weight:600; color:#4A4035;">충동방지</p>
                         <p style="font-size:0.68rem; color:#B8AD9E;">생각할 시간을 줘요</p>
                     </div>
                 </div>
-                <div class="impulse-details" id="impulse-details">
+                <div class="impulse-details show" id="impulse-details">
                 <div class="impulse-mode-options">
                     <button class="impulse-mode-btn" onclick="setImpulseMode('hide')" data-mode="hide">
-                        <span class="impulse-mode-icon">🙈</span>
-                        <span class="impulse-mode-label">보기 숨기기</span>
-                        <span class="impulse-mode-desc">N초 후 보기가 나타나요</span>
+                        <span class="impulse-mode-icon">👀</span>
+                        <span class="impulse-mode-label">보기 확인</span>
+                        <span class="impulse-mode-desc">버튼을 누르면 보기가 나타나요</span>
                     </button>
                     <button class="impulse-mode-btn selected" onclick="setImpulseMode('lock')" data-mode="lock">
                         <span class="impulse-mode-icon">🔒</span>
@@ -836,40 +775,6 @@
         <div id="quiz-feedback" class="text-center h-8 text-base font-bold mt-6" style="color:#4A4035;"></div>
     </div>
 
-    <!-- ══════════════ 손가락 맞추기 화면 ══════════════ -->
-    <div id="finger-view" class="hidden flex flex-col flex-1 fade-in">
-        <div class="flex items-center gap-3 mb-4">
-            <button onclick="goHome()" class="btn-home" title="홈">
-                <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l9-8 9 8M5 11v9a1 1 0 001 1h3m8 0h3a1 1 0 001-1v-9"/></svg>
-            </button>
-            <div class="flex-1">
-                <div class="flex justify-between items-center mb-1">
-                    <span id="finger-label" class="text-xs font-medium" style="color:#B8AD9E;">문제 1 / 5</span>
-                    <span class="text-xs font-medium" style="color:#B8AD9E;">맞힌 문제: <span id="finger-score" style="color:#5BC886;">0</span></span>
-                </div>
-                <div class="progress-track">
-                    <div id="finger-progress" class="progress-bar" style="width:0%"></div>
-                </div>
-            </div>
-        </div>
-
-        <p id="finger-hint" class="text-center text-sm mb-3 font-medium" style="color:#6BADE8;">
-            손가락이 몇 개일까요?
-        </p>
-
-        <!-- 손가락 표시 영역 -->
-        <div id="finger-display" class="finger-display"></div>
-
-        <!-- 구분선 -->
-        <div class="mb-3" style="border-top:1.5px solid #F0ECE6;"></div>
-
-        <!-- 선택지 칩 -->
-        <p class="text-center text-xs mb-3" style="color:#D0C8BC;">알맞은 숫자를 골라보세요</p>
-        <div id="finger-chips" class="flex justify-center gap-3 flex-wrap"></div>
-
-        <div id="finger-feedback" class="text-center h-8 text-base font-bold mt-4" style="color:#4A4035;"></div>
-    </div>
-
     <!-- ══════════════ 결과 화면 ══════════════ -->
     <div id="result-view" class="hidden flex flex-col flex-1 fade-in">
         <div class="flex-1 flex flex-col justify-center">
@@ -911,7 +816,7 @@
 <script>
     let maxNum = 10;
     let nextExpected = 1;
-    let lastMode = null;  // 'game', 'quiz', 'finger'
+    let lastMode = null;  // 'game', 'quiz'
     let lastRange = 10;
     let placedCount = 0;
     let wrongCount = 0;
@@ -989,9 +894,9 @@
     }
 
     // 충동방지
-    let impulseEnabled = false;
+    let impulseEnabled = true;
     let impulseDelay = 5;
-    let impulseMode = 'lock'; // 'hide' = 보기 숨기기, 'lock' = 선택 잠금
+    let impulseMode = 'lock'; // 'hide' = 보기 확인, 'lock' = 선택 잠금
     let impulseTimer = null;
 
     function toggleImpulse() {
@@ -1018,39 +923,47 @@
     function applyImpulseDelay(chipsEl, countdownParent) {
         if (!impulseEnabled) return;
 
-        const isHide = impulseMode === 'hide';
-        chipsEl.classList.add(isHide ? 'chips-hidden' : 'chips-locked');
+        if (impulseMode === 'hide') {
+            chipsEl.classList.add('chips-hidden');
+            const revealBtn = document.createElement('button');
+            revealBtn.className = 'reveal-btn';
+            revealBtn.id = 'revealBtn';
+            revealBtn.textContent = '보기 확인';
+            revealBtn.addEventListener('click', () => {
+                chipsEl.classList.remove('chips-hidden');
+                revealBtn.remove();
+            });
+            countdownParent.insertBefore(revealBtn, chipsEl);
+        } else {
+            chipsEl.classList.add('chips-locked');
+            const cdEl = document.createElement('div');
+            cdEl.className = 'delay-countdown';
+            cdEl.id = 'impulse-countdown';
+            countdownParent.insertBefore(cdEl, chipsEl);
 
-        // 카운트다운 표시
-        const cdEl = document.createElement('div');
-        cdEl.className = 'delay-countdown';
-        cdEl.id = 'impulse-countdown';
-        countdownParent.insertBefore(cdEl, chipsEl);
+            let remaining = impulseDelay;
+            cdEl.textContent = `${remaining}초 동안 생각해 보세요`;
 
-        let remaining = impulseDelay;
-        cdEl.textContent = isHide
-            ? `${remaining}초 후 보기가 나와요`
-            : `${remaining}초 동안 생각해 보세요`;
-
-        impulseTimer = setInterval(() => {
-            remaining--;
-            if (remaining <= 0) {
-                clearInterval(impulseTimer);
-                impulseTimer = null;
-                cdEl.remove();
-                chipsEl.classList.remove('chips-hidden', 'chips-locked');
-            } else {
-                cdEl.textContent = isHide
-                    ? `${remaining}초 후 보기가 나와요`
-                    : `${remaining}초 동안 생각해 보세요`;
-            }
-        }, 1000);
+            impulseTimer = setInterval(() => {
+                remaining--;
+                if (remaining <= 0) {
+                    clearInterval(impulseTimer);
+                    impulseTimer = null;
+                    cdEl.remove();
+                    chipsEl.classList.remove('chips-locked');
+                } else {
+                    cdEl.textContent = `${remaining}초 동안 생각해 보세요`;
+                }
+            }, 1000);
+        }
     }
 
     function clearImpulseTimer() {
         if (impulseTimer) { clearInterval(impulseTimer); impulseTimer = null; }
         const cd = document.getElementById('impulse-countdown');
         if (cd) cd.remove();
+        const oldReveal = document.getElementById('revealBtn');
+        if (oldReveal) oldReveal.remove();
         // 잔여 클래스 정리
         document.querySelectorAll('.chips-hidden, .chips-locked').forEach(el => {
             el.classList.remove('chips-hidden', 'chips-locked');
@@ -1308,7 +1221,6 @@
         document.getElementById('result-view').classList.add('hidden');
         if (lastMode === 'game') startGame(lastRange);
         else if (lastMode === 'quiz') startQuiz(lastRange);
-        else if (lastMode === 'finger') startFinger(lastRange);
         else goHome();
     }
 
@@ -1318,7 +1230,6 @@
         dragging = false;
         document.getElementById('game-view').classList.add('hidden');
         document.getElementById('quiz-view').classList.add('hidden');
-        document.getElementById('finger-view').classList.add('hidden');
         document.getElementById('result-view').classList.add('hidden');
         document.getElementById('start-view').classList.remove('hidden');
     }
@@ -1538,140 +1449,6 @@
         document.getElementById('r-time').textContent = `${sec}초`;
         document.getElementById('r-wrong').textContent = `${quizWrong}번`;
         speak(`다 풀었어요. ${nativeNum(quizCorrect)} 문제 맞혔어요.`);
-    }
-
-    // ── 손가락 개수 맞추기 모드 ──
-    let FINGER_TOTAL = 10;
-    let fingerRound = 0;
-    let fingerCorrect = 0;
-    let fingerWrong = 0;
-    let fingerStartTime = 0;
-    let fingerRange = 5;
-    let fingerAnswer = 0;
-    let fingerFirstTry = true;
-    let fingerQuestions = [];
-
-    function startFinger(range) {
-        lastMode = 'finger';
-        lastRange = range;
-        fingerRange = range;
-        fingerRound = 0;
-        fingerCorrect = 0;
-        fingerWrong = 0;
-        fingerStartTime = Date.now();
-
-        // 각 숫자가 정확히 1회씩 출제 (겹침 없음)
-        fingerQuestions = [];
-        for (let i = 1; i <= fingerRange; i++) fingerQuestions.push(i);
-        shuffle(fingerQuestions);
-        FINGER_TOTAL = fingerQuestions.length;
-
-        document.getElementById('start-view').classList.add('hidden');
-        document.getElementById('result-view').classList.add('hidden');
-        document.getElementById('finger-view').classList.remove('hidden');
-
-        if (window.speechSynthesis) speechSynthesis.speak(new SpeechSynthesisUtterance(''));
-        nextFingerRound();
-    }
-
-    let fingerLocked = false; // 정답 후 다음 문제 전환 중 터치 방지
-
-    function nextFingerRound() {
-        fingerRound++;
-        fingerFirstTry = true;
-        fingerLocked = false;
-
-        document.getElementById('finger-label').textContent = `문제 ${fingerRound} / ${FINGER_TOTAL}`;
-        document.getElementById('finger-progress').style.width = `${(fingerRound - 1) / FINGER_TOTAL * 100}%`;
-        document.getElementById('finger-score').textContent = fingerCorrect;
-        document.getElementById('finger-feedback').textContent = '';
-        document.getElementById('finger-hint').textContent = '손가락이 몇 개일까요?';
-        document.getElementById('finger-hint').style.color = '#6BADE8';
-
-        // 미리 생성된 문제 목록에서 정답 가져오기
-        fingerAnswer = fingerQuestions[fingerRound - 1];
-
-        // 손가락 렌더링
-        document.getElementById('finger-display').innerHTML = getHandHTML(fingerAnswer);
-
-        // 선택지 생성: 정답 1개 + 오답 3개
-        const choices = [fingerAnswer];
-        while (choices.length < 4) {
-            const n = Math.floor(Math.random() * fingerRange) + 1;
-            if (!choices.includes(n)) choices.push(n);
-        }
-        shuffle(choices);
-
-        // 칩 렌더링
-        const chipsEl = document.getElementById('finger-chips');
-        chipsEl.innerHTML = '';
-        choices.forEach(n => {
-            const chip = document.createElement('div');
-            chip.className = 'finger-chip';
-            chip.textContent = n;
-            chip.dataset.num = n;
-            chip.addEventListener('click', () => handleFingerTap(chip, n));
-            chipsEl.appendChild(chip);
-        });
-
-        // 충동방지
-        clearImpulseTimer();
-        applyImpulseDelay(chipsEl, chipsEl.parentElement);
-    }
-
-    function handleFingerTap(chip, value) {
-        if (fingerLocked) return;
-
-        if (value === fingerAnswer) {
-            // 정답
-            fingerLocked = true;
-            chip.classList.add('correct-tap');
-            if (fingerFirstTry) fingerCorrect++;
-
-            document.getElementById('finger-score').textContent = fingerCorrect;
-            document.getElementById('finger-progress').style.width = `${fingerRound / FINGER_TOTAL * 100}%`;
-
-            const fb = document.getElementById('finger-feedback');
-            fb.textContent = '정답이에요! 🎉';
-            fb.style.color = '#5BC886';
-            speak(`${nativeNum(fingerAnswer)}개, 정답이에요.`);
-
-            // 나머지 칩 비활성화
-            document.querySelectorAll('#finger-chips .finger-chip').forEach(c => {
-                if (c !== chip) c.classList.add('disabled');
-            });
-
-            if (fingerRound >= FINGER_TOTAL) {
-                setTimeout(showFingerResult, 1500);
-            } else {
-                setTimeout(nextFingerRound, 1300);
-            }
-        } else {
-            // 오답
-            fingerWrong++;
-            fingerFirstTry = false;
-            chip.classList.add('wrong-tap');
-            setTimeout(() => chip.classList.remove('wrong-tap'), 400);
-            const fb = document.getElementById('finger-feedback');
-            fb.textContent = '다시 세어볼까요?';
-            fb.style.color = '#F07070';
-            speak('다시 세어봐요.');
-        }
-    }
-
-    function showFingerResult() {
-        const sec = Math.floor((Date.now() - fingerStartTime) / 1000);
-        document.getElementById('finger-view').classList.add('hidden');
-        document.getElementById('result-view').classList.remove('hidden');
-        document.getElementById('r-range').textContent = `손가락 1~${fingerRange}`;
-        document.getElementById('r-time').textContent = `${sec}초`;
-        document.getElementById('r-wrong').textContent = `${fingerWrong}번`;
-        speak(`다 풀었어요. ${nativeNum(fingerCorrect)} 문제 맞혔어요.`);
-    }
-
-    // ── 손가락 SVG 생성 (사실적 일러스트) ──
-    function getHandHTML(count) {
-        return `<img src="images/${count}.png" alt="손가락 ${count}개" class="hand-image">`;
     }
 
     function scatterPositions(count, areaW, areaH, chipSize) {
