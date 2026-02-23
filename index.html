@@ -488,6 +488,30 @@
         .chips-hidden { visibility: hidden; }
         .chips-locked { pointer-events: none; opacity: 0.45; }
 
+        /* ── 컴팩트 모드 (50칸) ── */
+        .game-compact .slots-grid { gap: 2px; }
+        .game-compact .slot {
+            border-radius: 8px; border-width: 2px;
+            font-size: 0.8rem;
+        }
+        .game-compact .slot .ghost-num { font-size: 0.7rem; }
+        .game-compact .slot.filled { font-size: 0.9rem; }
+        .game-compact .num-chip { width: 28px; height: 28px; font-size: 0.65rem; }
+        .game-compact #hint-text { margin-bottom: 8px !important; }
+
+        /* ── 울트라 컴팩트 모드 (100칸) ── */
+        .game-ultra-compact .slots-grid { gap: 1px; }
+        .game-ultra-compact .slot {
+            border-radius: 5px; border-width: 1.5px;
+            font-size: 0.55rem;
+        }
+        .game-ultra-compact .slot .ghost-num { font-size: 0.5rem; }
+        .game-ultra-compact .slot.filled { font-size: 0.6rem; }
+        .game-ultra-compact .num-chip { width: 22px; height: 22px; font-size: 0.5rem; }
+        .game-ultra-compact .floating-num { width: 32px; height: 32px; font-size: 0.75rem; }
+        .game-ultra-compact #hint-text { margin-bottom: 4px !important; font-size: 0.75rem; }
+        .game-ultra-compact .scatter-area { min-height: 100px !important; }
+
         .reveal-btn {
             display: block;
             width: 100%;
@@ -898,7 +922,6 @@
 
 <script>
     let maxNum = 10;
-    let nextExpected = 1;
     let lastMode = null;  // 'game', 'quiz'
     let lastRange = 10;
     let placedCount = 0;
@@ -1059,14 +1082,16 @@
         lastMode = 'game';
         lastRange = range;
         maxNum = range;
-        nextExpected = reverseMode ? maxNum : 1;
         placedCount = 0;
         wrongCount = 0;
         startTime = Date.now();
 
         document.getElementById('start-view').classList.add('hidden');
         document.getElementById('result-view').classList.add('hidden');
-        document.getElementById('game-view').classList.remove('hidden');
+        const gameView = document.getElementById('game-view');
+        gameView.classList.remove('hidden', 'game-compact', 'game-ultra-compact');
+        if (range >= 100) gameView.classList.add('game-ultra-compact');
+        else if (range >= 50) gameView.classList.add('game-compact');
 
         const modeLabel = reverseMode ? `${maxNum} → 1 역순` : `1 ~ ${maxNum}`;
         document.getElementById('game-label').textContent = modeLabel;
@@ -1102,7 +1127,7 @@
         chipsEl.innerHTML = '';
         // 흩뿌리기 영역 높이 계산
         const isTablet = window.innerWidth >= 768;
-        const chipPx = isTablet ? 44 : 36;
+        const chipPx = range >= 100 ? (isTablet ? 28 : 22) : range >= 50 ? (isTablet ? 36 : 28) : (isTablet ? 44 : 36);
         const gap = Math.round(chipPx * 0.3);
         const cellSize = chipPx + gap;
         const areaW = chipsEl.offsetWidth || 500;
@@ -1191,7 +1216,7 @@
 
         if (target && !target.classList.contains('filled')) {
             const slotNum = parseInt(target.dataset.num);
-            if (dragValue === slotNum && dragValue === nextExpected) {
+            if (dragValue === slotNum) {
                 // 정답
                 placeNumber(target, dragValue);
             } else {
@@ -1200,11 +1225,7 @@
                 target.classList.add('wrong');
                 setTimeout(() => target.classList.remove('wrong'), 400);
                 const fb = document.getElementById('feedback');
-                if (dragValue !== nextExpected) {
-                    fb.textContent = `${nextExpected}을 먼저 놓아야 해요`;
-                } else {
-                    fb.textContent = '이 칸은 다른 숫자 자리예요';
-                }
+                fb.textContent = '이 칸은 다른 숫자 자리예요';
                 fb.style.color = '#F07070';
                 speak('다시 해봐요.');
             }
@@ -1222,17 +1243,13 @@
         slot.innerHTML = '';
         slot.textContent = value;
         slot.classList.add('filled', 'pop-in');
-        slot.style.fontSize = '1.25rem';
+        const gv = document.getElementById('game-view');
+        slot.style.fontSize = gv.classList.contains('game-ultra-compact') ? '0.6rem' : gv.classList.contains('game-compact') ? '0.9rem' : '1.25rem';
 
         // 칩 숨기기
         dragChipEl.classList.add('placed');
 
         placedCount++;
-        if (reverseMode) {
-            nextExpected--;
-        } else {
-            nextExpected++;
-        }
         updateProgress();
         updateHint();
 
@@ -1289,8 +1306,8 @@
             hint.textContent = '완성!';
             hint.style.color = '#5BC886';
         } else {
-            const direction = reverseMode ? '(역순) ' : '';
-            hint.textContent = `${direction}다음 숫자: ${nextExpected}`;
+            const remaining = maxNum - placedCount;
+            hint.textContent = `남은 숫자: ${remaining}개`;
             hint.style.color = '#6BADE8';
         }
     }
