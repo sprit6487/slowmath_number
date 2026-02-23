@@ -266,7 +266,8 @@
             justify-items: center;
         }
         #quiz-cards.quiz-cards-8 {
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(8, 1fr);
+            gap: 4px;
         }
         .quiz-card {
             width: 100%; max-width: 72px;
@@ -278,9 +279,9 @@
             transition: all 0.2s;
         }
         .quiz-cards-8 .quiz-card {
-            max-width: 58px;
-            font-size: 1.25rem;
-            border-radius: 14px;
+            max-width: none;
+            font-size: 1rem;
+            border-radius: 12px;
         }
         .quiz-card.open {
             border: 2.5px solid #6BADE8;
@@ -570,7 +571,7 @@
             .slot { border-radius: 8px; font-size: 0.9rem; }
             .num-chip { width: 29px; height: 29px; font-size: 0.65rem; }
             .quiz-card { max-width: 56px; font-size: 1.15rem; border-radius: 12px; }
-            .quiz-cards-8 .quiz-card { max-width: 44px; font-size: 1rem; border-radius: 10px; }
+            .quiz-cards-8 .quiz-card { max-width: none; font-size: 0.8rem; border-radius: 8px; }
             .quiz-chip { width: 48px; height: 48px; font-size: 1.05rem; }
             .floating-num { width: 36px; height: 36px; font-size: 0.78rem; }
         }
@@ -600,7 +601,7 @@
             .num-chip { width: 42px; height: 42px; font-size: 0.91rem; }
             .floating-num { width: 47px; height: 47px; font-size: 1.04rem; border-radius: 12px; }
             .quiz-card { max-width: 80px; font-size: 1.7rem; border-radius: 18px; }
-            .quiz-cards-8 .quiz-card { max-width: 72px; font-size: 1.4rem; border-radius: 16px; }
+            .quiz-cards-8 .quiz-card { max-width: none; font-size: 1.2rem; border-radius: 14px; }
             .quiz-chip { width: 68px; height: 68px; font-size: 1.4rem; }
             #quiz-chips { gap: 16px !important; }
             .impulse-toggle { padding: 16px 20px; border-radius: 20px; }
@@ -615,7 +616,7 @@
             .slot { font-size: 1.4rem; }
             .num-chip { width: 47px; height: 47px; font-size: 0.98rem; }
             .quiz-card { max-width: 90px; font-size: 1.9rem; }
-            .quiz-cards-8 .quiz-card { max-width: 80px; font-size: 1.55rem; }
+            .quiz-cards-8 .quiz-card { max-width: none; font-size: 1.35rem; }
             .quiz-chip { width: 76px; height: 76px; font-size: 1.55rem; }
         }
     </style>
