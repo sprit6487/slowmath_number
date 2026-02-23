@@ -592,26 +592,36 @@
                         </div>
                     </div>
                 </div>
-                <div class="grid grid-cols-2 gap-2">
+                <div class="grid grid-cols-3 gap-2">
+                    <button onclick="startGame(5)"
+                            class="mode-card rounded-xl p-3 text-left border-2" style="border-color:#E8E2DA; background:white;">
+                        <p class="text-base font-bold" style="color:#4A4035;">1 부터 5</p>
+                        <p class="text-xs mt-0.5" style="color:#B8AD9E;">반 줄</p>
+                    </button>
                     <button onclick="startGame(10)"
                             class="mode-card rounded-xl p-3 text-left border-2" style="border-color:#E8E2DA; background:white;">
                         <p class="text-base font-bold" style="color:#4A4035;">1 부터 10</p>
-                        <p class="text-xs mt-0.5" style="color:#B8AD9E;">한 줄 채우기</p>
+                        <p class="text-xs mt-0.5" style="color:#B8AD9E;">한 줄</p>
                     </button>
                     <button onclick="startGame(20)"
                             class="mode-card rounded-xl p-3 text-left border-2" style="border-color:#E8E2DA; background:white;">
                         <p class="text-base font-bold" style="color:#4A4035;">1 부터 20</p>
-                        <p class="text-xs mt-0.5" style="color:#B8AD9E;">두 줄 채우기</p>
+                        <p class="text-xs mt-0.5" style="color:#B8AD9E;">두 줄</p>
                     </button>
                     <button onclick="startGame(30)"
                             class="mode-card rounded-xl p-3 text-left border-2" style="border-color:#E8E2DA; background:white;">
                         <p class="text-base font-bold" style="color:#4A4035;">1 부터 30</p>
-                        <p class="text-xs mt-0.5" style="color:#B8AD9E;">세 줄 채우기</p>
+                        <p class="text-xs mt-0.5" style="color:#B8AD9E;">세 줄</p>
                     </button>
                     <button onclick="startGame(50)"
                             class="mode-card rounded-xl p-3 text-left border-2" style="border-color:#E8E2DA; background:white;">
                         <p class="text-base font-bold" style="color:#4A4035;">1 부터 50</p>
-                        <p class="text-xs mt-0.5" style="color:#B8AD9E;">다섯 줄 채우기</p>
+                        <p class="text-xs mt-0.5" style="color:#B8AD9E;">다섯 줄</p>
+                    </button>
+                    <button onclick="startGame(100)"
+                            class="mode-card rounded-xl p-3 text-left border-2" style="border-color:#E8E2DA; background:white;">
+                        <p class="text-base font-bold" style="color:#4A4035;">1 부터 100</p>
+                        <p class="text-xs mt-0.5" style="color:#B8AD9E;">열 줄</p>
                     </button>
                 </div>
             </div>
@@ -628,26 +638,36 @@
                     <span class="text-lg font-bold" style="color:#6B5F50;">빈칸 맞추기</span>
                     <span class="text-xs" style="color:#B8AD9E;">숨은 숫자를 찾아요</span>
                 </div>
-                <div class="grid grid-cols-2 gap-2">
+                <div class="grid grid-cols-3 gap-2">
+                    <button onclick="startQuiz(5)"
+                            class="mode-card rounded-xl p-3 text-left border-2" style="border-color:#E8E2DA; background:white;">
+                        <p class="text-base font-bold" style="color:#4A4035;">1 부터 5</p>
+                        <p class="text-xs mt-0.5" style="color:#B8AD9E;">5개 중 2개 숨김</p>
+                    </button>
                     <button onclick="startQuiz(10)"
                             class="mode-card rounded-xl p-3 text-left border-2" style="border-color:#E8E2DA; background:white;">
                         <p class="text-base font-bold" style="color:#4A4035;">1 부터 10</p>
-                        <p class="text-xs mt-0.5" style="color:#B8AD9E;">연속 8개 중 4개 숨김</p>
+                        <p class="text-xs mt-0.5" style="color:#B8AD9E;">8개 중 4개 숨김</p>
                     </button>
                     <button onclick="startQuiz(20)"
                             class="mode-card rounded-xl p-3 text-left border-2" style="border-color:#E8E2DA; background:white;">
                         <p class="text-base font-bold" style="color:#4A4035;">1 부터 20</p>
-                        <p class="text-xs mt-0.5" style="color:#B8AD9E;">연속 8개 중 4개 숨김</p>
+                        <p class="text-xs mt-0.5" style="color:#B8AD9E;">8개 중 4개 숨김</p>
                     </button>
                     <button onclick="startQuiz(30)"
                             class="mode-card rounded-xl p-3 text-left border-2" style="border-color:#E8E2DA; background:white;">
                         <p class="text-base font-bold" style="color:#4A4035;">1 부터 30</p>
-                        <p class="text-xs mt-0.5" style="color:#B8AD9E;">연속 8개 중 4개 숨김</p>
+                        <p class="text-xs mt-0.5" style="color:#B8AD9E;">8개 중 4개 숨김</p>
                     </button>
                     <button onclick="startQuiz(50)"
                             class="mode-card rounded-xl p-3 text-left border-2" style="border-color:#E8E2DA; background:white;">
                         <p class="text-base font-bold" style="color:#4A4035;">1 부터 50</p>
-                        <p class="text-xs mt-0.5" style="color:#B8AD9E;">연속 8개 중 4개 숨김</p>
+                        <p class="text-xs mt-0.5" style="color:#B8AD9E;">8개 중 4개 숨김</p>
+                    </button>
+                    <button onclick="startQuiz(100)"
+                            class="mode-card rounded-xl p-3 text-left border-2" style="border-color:#E8E2DA; background:white;">
+                        <p class="text-base font-bold" style="color:#4A4035;">1 부터 100</p>
+                        <p class="text-xs mt-0.5" style="color:#B8AD9E;">8개 중 4개 숨김</p>
                     </button>
                 </div>
             </div>
@@ -859,14 +879,16 @@
     }
 
     function nativeKorean(n) {
+        if (n === 100) return '백';
         const ones = ['', '하나', '둘', '셋', '넷', '다섯', '여섯', '일곱', '여덟', '아홉'];
-        const tens = ['', '열', '스물', '서른', '마흔', '쉰'];
+        const tens = ['', '열', '스물', '서른', '마흔', '쉰', '예순', '일흔', '여든', '아흔'];
         const t = Math.floor(n / 10);
         const o = n % 10;
         return tens[t] + ones[o];
     }
 
     function sinoKorean(n) {
+        if (n === 100) return '백';
         const ones = ['', '일', '이', '삼', '사', '오', '육', '칠', '팔', '구'];
         if (n <= 0) return '';
         const t = Math.floor(n / 10);
@@ -988,9 +1010,12 @@
         document.getElementById('feedback').textContent = '';
         updateProgress();
 
-        // 슬롯 생성 (10칸 한 줄, 20이면 두 줄)
+        // 슬롯 생성
         const slotsEl = document.getElementById('slots');
         slotsEl.innerHTML = '';
+        const gridCols = maxNum <= 5 ? 5 : 10;
+        slotsEl.style.gridTemplateColumns = `repeat(${gridCols}, 1fr)`;
+        slotsEl.style.fontSize = maxNum >= 100 ? '0.7rem' : '';
         for (let idx = 0; idx < maxNum; idx++) {
             const num = reverseMode ? (maxNum - idx) : (idx + 1);
             const slot = document.createElement('div');
@@ -1277,8 +1302,8 @@
         document.getElementById('quiz-hint').textContent = '숨은 숫자를 찾아서 빈칸에 놓아봐요';
         document.getElementById('quiz-hint').style.color = '#6BADE8';
 
-        const cardCount = 8;
-        const hideCount = 4;
+        const cardCount = quizRange <= 5 ? 5 : 8;
+        const hideCount = quizRange <= 5 ? 2 : 4;
 
         const maxStart = quizRange - cardCount + 1;
         const start = Math.floor(Math.random() * maxStart) + 1;
@@ -1303,7 +1328,7 @@
         // 카드 렌더링
         const cardsEl = document.getElementById('quiz-cards');
         cardsEl.innerHTML = '';
-        cardsEl.classList.add('quiz-cards-8');
+        cardsEl.classList.toggle('quiz-cards-8', cardCount >= 8);
         quizNumbers.forEach((n, i) => {
             const card = document.createElement('div');
             card.className = 'quiz-card';
@@ -1400,7 +1425,7 @@
 
                 const fb = document.getElementById('quiz-feedback');
 
-                if (quizPlacedInRound >= 4) {
+                if (quizPlacedInRound >= quizHiddenOrder.length) {
                     // 이 라운드 완성
                     if (quizFirstTryInRound) quizCorrect++;
                     document.getElementById('quiz-score').textContent = quizCorrect;
