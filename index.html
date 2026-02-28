@@ -849,6 +849,11 @@
                         <p class="text-base font-bold" style="color:#4A4035;">1 부터 50</p>
                         <p class="text-xs mt-0.5" style="color:#B8AD9E;">다섯 줄</p>
                     </button>
+                    <button onclick="startGame(100, 50)" data-range="100"
+                            class="mode-card rounded-xl p-3 text-left border-2" style="border-color:#E8E2DA; background:white;">
+                        <p class="text-base font-bold" style="color:#4A4035;">50 부터 100</p>
+                        <p class="text-xs mt-0.5" style="color:#B8AD9E;">다섯 줄</p>
+                    </button>
                 </div>
             </div>
 
@@ -1101,10 +1106,12 @@
 
 <script>
     let maxNum = 10;
+    let startNum = 1;
     let nextExpected = 1;
     let lastMode = null;  // 'game', 'quiz', 'fill'
     let fillTotal = 0;    // fill 모드: 사용자가 채울 칸 수
     let lastRange = 10;
+    let lastStart = 1;
     let placedCount = 0;
     let wrongCount = 0;
     let startTime = 0;
@@ -1259,11 +1266,13 @@
         });
     }
 
-    function startGame(range) {
+    function startGame(range, start) {
         lastMode = 'game';
         lastRange = range;
+        startNum = start || 1;
+        lastStart = startNum;
         maxNum = range;
-        nextExpected = reverseMode ? maxNum : 1;
+        nextExpected = reverseMode ? maxNum : startNum;
         placedCount = 0;
         wrongCount = 0;
         startTime = Date.now();
@@ -1272,7 +1281,7 @@
         document.getElementById('result-view').classList.add('hidden');
         document.getElementById('game-view').classList.remove('hidden');
 
-        const modeLabel = reverseMode ? `${maxNum} → 1 역순` : `1 ~ ${maxNum}`;
+        const modeLabel = reverseMode ? `${maxNum} → ${startNum} 역순` : `${startNum} ~ ${maxNum}`;
         document.getElementById('game-label').textContent = modeLabel;
         document.getElementById('feedback').textContent = '';
         updateProgress();
@@ -1280,11 +1289,12 @@
         // 슬롯 생성
         const slotsEl = document.getElementById('slots');
         slotsEl.innerHTML = '';
-        const gridCols = maxNum <= 5 ? 5 : 10;
+        const totalNums = maxNum - startNum + 1;
+        const gridCols = totalNums <= 5 ? 5 : 10;
         slotsEl.style.gridTemplateColumns = `repeat(${gridCols}, 1fr)`;
         slotsEl.style.fontSize = maxNum >= 100 ? '0.7rem' : '';
-        for (let idx = 0; idx < maxNum; idx++) {
-            const num = reverseMode ? (maxNum - idx) : (idx + 1);
+        for (let idx = 0; idx < totalNums; idx++) {
+            const num = reverseMode ? (maxNum - idx) : (startNum + idx);
             const slot = document.createElement('div');
             slot.className = 'slot';
             slot.dataset.num = num;
@@ -1299,7 +1309,7 @@
 
         // 칩 생성 (랜덤 위치에 흩뿌리기)
         const nums = [];
-        for (let i = 1; i <= maxNum; i++) nums.push(i);
+        for (let i = startNum; i <= maxNum; i++) nums.push(i);
         shuffle(nums);
 
         const chipsEl = document.getElementById('chips');
@@ -1551,7 +1561,7 @@
         updateHint();
 
         const fb = document.getElementById('feedback');
-        const totalTarget = lastMode === 'fill' ? fillTotal : maxNum;
+        const totalTarget = lastMode === 'fill' ? fillTotal : (maxNum - startNum + 1);
 
         if (placedCount >= totalTarget) {
             fb.textContent = '완성! 🎉';
@@ -1594,14 +1604,14 @@
     }
 
     function updateProgress() {
-        const total = lastMode === 'fill' ? fillTotal : maxNum;
+        const total = lastMode === 'fill' ? fillTotal : (maxNum - startNum + 1);
         document.getElementById('placed-label').textContent = `${placedCount} / ${total}`;
         document.getElementById('progress').style.width = `${(placedCount / total) * 100}%`;
     }
 
     function updateHint() {
         const hint = document.getElementById('hint-text');
-        const total = lastMode === 'fill' ? fillTotal : maxNum;
+        const total = lastMode === 'fill' ? fillTotal : (maxNum - startNum + 1);
         if (placedCount >= total) {
             hint.textContent = '완성!';
             hint.style.color = '#5BC886';
@@ -1620,7 +1630,7 @@
         const sec = Math.floor((Date.now() - startTime) / 1000);
         document.getElementById('game-view').classList.add('hidden');
         document.getElementById('result-view').classList.remove('hidden');
-        const rangeText = reverseMode ? `${maxNum} → 1 역순` : `1 ~ ${maxNum}`;
+        const rangeText = reverseMode ? `${maxNum} → ${startNum} 역순` : `${startNum} ~ ${maxNum}`;
         document.getElementById('r-range').textContent = rangeText;
         document.getElementById('r-time').textContent = `${sec}초`;
         document.getElementById('r-wrong').textContent = `${wrongCount}번`;
@@ -1628,7 +1638,7 @@
 
     function replay() {
         document.getElementById('result-view').classList.add('hidden');
-        if (lastMode === 'game') startGame(lastRange);
+        if (lastMode === 'game') startGame(lastRange, lastStart);
         else if (lastMode === 'quiz') startQuiz(lastRange);
         else if (lastMode === 'fill') startFillGame(lastRange);
         else goHome();
