@@ -691,6 +691,19 @@
           transition: background 0.15s;
         }
         .logout-btn:hover { background: #F5F1EB; }
+
+        /* ── 설정 (plusone 스타일) ── */
+        .settings-section { width: 100%; margin-top: 16px; padding-top: 16px; border-top: 1.5px solid #F0ECE6; }
+        .setting-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+        .setting-label { font-size: 0.875rem; font-weight: 600; color: #4A4035; }
+        .setting-desc { font-size: 0.75rem; color: #B8AD9E; margin-top: 2px; }
+        .toggle-track { width: 48px; height: 28px; border-radius: 99px; position: relative; background: #E0DAD0; transition: background 0.2s; cursor: pointer; flex-shrink: 0; border: none; outline: none; }
+        .toggle-track.on { background: #5BC886; }
+        .toggle-knob { width: 22px; height: 22px; border-radius: 50%; background: white; position: absolute; top: 3px; left: 3px; box-shadow: 0 1px 4px rgba(0,0,0,0.12); transition: transform 0.2s; }
+        .toggle-track.on .toggle-knob { transform: translateX(20px); }
+        .imp-sec-row { display: flex; gap: 4px; }
+        .imp-sec { flex: 1; padding: 8px 0; font-size: 0.7rem; font-weight: 600; border-radius: 10px; border: 2px solid #E8E2DA; background: white; color: #8C8070; cursor: pointer; transition: all 0.15s; text-align: center; }
+        .imp-sec.active { border-color: #C4AA82; background: #FAF5EE; color: #7B6545; }
     </style>
 </head>
 <body>
@@ -848,9 +861,9 @@
                         <p class="text-base font-bold" style="color:#4A4035;">1 부터 50</p>
                         <p class="text-xs mt-0.5" style="color:#B8AD9E;">다섯 줄</p>
                     </button>
-                    <button onclick="startGame(100, 50)" data-range="100"
+                    <button onclick="startGame(100, 51)" data-range="100"
                             class="mode-card rounded-xl p-3 text-left border-2" style="border-color:#E8E2DA; background:white;">
-                        <p class="text-base font-bold" style="color:#4A4035;">50 부터 100</p>
+                        <p class="text-base font-bold" style="color:#4A4035;">51 부터 100</p>
                         <p class="text-xs mt-0.5" style="color:#B8AD9E;">다섯 줄</p>
                     </button>
                 </div>
@@ -940,56 +953,63 @@
                         <p class="text-base font-bold" style="color:#4A4035;">1 부터 50</p>
                         <p class="text-xs mt-0.5" style="color:#B8AD9E;">15개 힌트</p>
                     </button>
+                    <button onclick="startFillGame(100, 51)" data-range="100"
+                            class="mode-card rounded-xl p-3 text-left border-2" style="border-color:#E8E2DA; background:white;">
+                        <p class="text-base font-bold" style="color:#4A4035;">51 부터 100</p>
+                        <p class="text-xs mt-0.5" style="color:#B8AD9E;">15개 힌트</p>
+                    </button>
                 </div>
             </div>
 
             <div style="margin-top: auto;"></div>
 
-            <!-- 음성 + 충동방지 -->
-            <div class="flex gap-2">
-                <div class="impulse-toggle flex-1" id="tts-toggle" onclick="toggleTTS()">
-                    <div class="toggle-switch on" id="tts-switch"></div>
+            <!-- 음성 + 충동방지 (plusone 스타일) -->
+            <div class="settings-section">
+                <div class="setting-row">
                     <div>
-                        <p style="font-size:0.81rem; font-weight:600; color:#4A4035;">음성</p>
-                        <p style="font-size:0.68rem; color:#B8AD9E;">정답/오답 음성 안내</p>
+                        <div class="setting-label">음성</div>
+                        <div class="setting-desc">정답/오답 음성 안내</div>
                     </div>
+                    <button id="tts-toggle" onclick="toggleTTS()" class="toggle-track on">
+                        <span class="toggle-knob"></span>
+                    </button>
                 </div>
-            </div>
 
-            <div style="margin-top: -6px;">
-                <div class="impulse-toggle active" id="impulse-toggle" onclick="toggleImpulse()">
-                    <div class="toggle-switch on" id="impulse-switch"></div>
+                <div class="setting-row">
                     <div>
-                        <p style="font-size:0.81rem; font-weight:600; color:#4A4035;">충동방지</p>
-                        <p style="font-size:0.68rem; color:#B8AD9E;">생각할 시간을 줘요</p>
+                        <div class="setting-label">충동방지</div>
+                        <div class="setting-desc">생각할 시간을 줘요</div>
+                    </div>
+                    <button id="impulse-toggle" onclick="toggleImpulse()" class="toggle-track on">
+                        <span class="toggle-knob"></span>
+                    </button>
+                </div>
+                <div id="impulse-details">
+                    <div class="impulse-mode-options">
+                        <button class="impulse-mode-btn" onclick="setImpulseMode('hide')" data-mode="hide">
+                            <span class="impulse-mode-icon">&#x1F440;</span>
+                            <span class="impulse-mode-label">보기 확인</span>
+                            <span class="impulse-mode-desc">버튼을 누르면 보기가 나타나요</span>
+                        </button>
+                        <button class="impulse-mode-btn selected" onclick="setImpulseMode('lock')" data-mode="lock">
+                            <span class="impulse-mode-icon">&#x1F512;</span>
+                            <span class="impulse-mode-label">선택 잠금</span>
+                            <span class="impulse-mode-desc">N초 동안 선택할 수 없어요</span>
+                        </button>
+                    </div>
+                    <div class="imp-sec-row">
+                        <button onclick="setImpulseDelay(1)" class="imp-sec">1초</button>
+                        <button onclick="setImpulseDelay(2)" class="imp-sec">2초</button>
+                        <button onclick="setImpulseDelay(3)" class="imp-sec">3초</button>
+                        <button onclick="setImpulseDelay(4)" class="imp-sec">4초</button>
+                        <button onclick="setImpulseDelay(5)" class="imp-sec active">5초</button>
+                        <button onclick="setImpulseDelay(6)" class="imp-sec">6초</button>
+                        <button onclick="setImpulseDelay(7)" class="imp-sec">7초</button>
+                        <button onclick="setImpulseDelay(8)" class="imp-sec">8초</button>
+                        <button onclick="setImpulseDelay(9)" class="imp-sec">9초</button>
+                        <button onclick="setImpulseDelay(10)" class="imp-sec">10초</button>
                     </div>
                 </div>
-                <div class="impulse-details show" id="impulse-details">
-                <div class="impulse-mode-options">
-                    <button class="impulse-mode-btn" onclick="setImpulseMode('hide')" data-mode="hide">
-                        <span class="impulse-mode-icon">👀</span>
-                        <span class="impulse-mode-label">보기 확인</span>
-                        <span class="impulse-mode-desc">버튼을 누르면 보기가 나타나요</span>
-                    </button>
-                    <button class="impulse-mode-btn selected" onclick="setImpulseMode('lock')" data-mode="lock">
-                        <span class="impulse-mode-icon">🔒</span>
-                        <span class="impulse-mode-label">선택 잠금</span>
-                        <span class="impulse-mode-desc">N초 동안 선택할 수 없어요</span>
-                    </button>
-                </div>
-                <div class="delay-options show">
-                    <button class="delay-btn" onclick="setDelay(1)" data-delay="1">1초</button>
-                    <button class="delay-btn" onclick="setDelay(2)" data-delay="2">2초</button>
-                    <button class="delay-btn" onclick="setDelay(3)" data-delay="3">3초</button>
-                    <button class="delay-btn" onclick="setDelay(4)" data-delay="4">4초</button>
-                    <button class="delay-btn selected" onclick="setDelay(5)" data-delay="5">5초</button>
-                    <button class="delay-btn" onclick="setDelay(6)" data-delay="6">6초</button>
-                    <button class="delay-btn" onclick="setDelay(7)" data-delay="7">7초</button>
-                    <button class="delay-btn" onclick="setDelay(8)" data-delay="8">8초</button>
-                    <button class="delay-btn" onclick="setDelay(9)" data-delay="9">9초</button>
-                    <button class="delay-btn" onclick="setDelay(10)" data-delay="10">10초</button>
-                </div>
-            </div>
             </div>
         </div>
 
@@ -1218,48 +1238,63 @@
 
     // 음성
     let ttsEnabled = true;
+    // 충동방지
+    let impulsePrevention = true;
+    let impulseDelay = 5;
+    let impulseMode = 'lock';
+    let impulseTimer = null;
+
+    function saveSettings() {
+        localStorage.setItem('slowmath_number_settings', JSON.stringify({
+            ttsEnabled, impulsePrevention, impulseMode, impulseDelay
+        }));
+    }
+    function loadSettings() {
+        try {
+            const s = JSON.parse(localStorage.getItem('slowmath_number_settings'));
+            if (!s) return;
+            if (typeof s.ttsEnabled === 'boolean') ttsEnabled = s.ttsEnabled;
+            if (typeof s.impulsePrevention === 'boolean') impulsePrevention = s.impulsePrevention;
+            if (s.impulseMode === 'hide' || s.impulseMode === 'lock') impulseMode = s.impulseMode;
+            if (typeof s.impulseDelay === 'number' && s.impulseDelay >= 1 && s.impulseDelay <= 10) impulseDelay = s.impulseDelay;
+        } catch(e) {}
+    }
+    function applySettingsUI() {
+        document.getElementById('tts-toggle').classList.toggle('on', ttsEnabled);
+        document.getElementById('impulse-toggle').classList.toggle('on', impulsePrevention);
+        document.getElementById('impulse-details').style.display = impulsePrevention ? '' : 'none';
+        document.querySelectorAll('.impulse-mode-btn').forEach(b => b.classList.toggle('selected', b.dataset.mode === impulseMode));
+        document.querySelectorAll('.imp-sec').forEach((b, i) => b.classList.toggle('active', i + 1 === impulseDelay));
+    }
+
     function toggleTTS() {
         ttsEnabled = !ttsEnabled;
-        const tog = document.getElementById('tts-toggle');
-        const sw = document.getElementById('tts-switch');
-        tog.classList.toggle('active', ttsEnabled);
-        sw.classList.toggle('on', ttsEnabled);
+        document.getElementById('tts-toggle').classList.toggle('on', ttsEnabled);
         if (!ttsEnabled && window.speechSynthesis) window.speechSynthesis.cancel();
         saveSettings();
     }
 
-    // 충동방지
-    let impulseEnabled = true;
-    let impulseDelay = 5;
-    let impulseMode = 'lock'; // 'hide' = 보기 확인, 'lock' = 선택 잠금
-    let impulseTimer = null;
-
     function toggleImpulse() {
-        impulseEnabled = !impulseEnabled;
-        document.getElementById('impulse-switch').classList.toggle('on', impulseEnabled);
-        document.getElementById('impulse-toggle').classList.toggle('active', impulseEnabled);
-        document.getElementById('impulse-details').classList.toggle('show', impulseEnabled);
+        impulsePrevention = !impulsePrevention;
+        document.getElementById('impulse-toggle').classList.toggle('on', impulsePrevention);
+        document.getElementById('impulse-details').style.display = impulsePrevention ? '' : 'none';
         saveSettings();
     }
 
     function setImpulseMode(mode) {
         impulseMode = mode;
-        document.querySelectorAll('.impulse-mode-btn').forEach(b => {
-            b.classList.toggle('selected', b.dataset.mode === mode);
-        });
+        document.querySelectorAll('.impulse-mode-btn').forEach(b => b.classList.toggle('selected', b.dataset.mode === mode));
         saveSettings();
     }
 
-    function setDelay(sec) {
+    function setImpulseDelay(sec) {
         impulseDelay = sec;
-        document.querySelectorAll('.delay-btn').forEach(b => {
-            b.classList.toggle('selected', parseInt(b.dataset.delay) === sec);
-        });
+        document.querySelectorAll('.imp-sec').forEach((b, i) => b.classList.toggle('active', i + 1 === sec));
         saveSettings();
     }
 
     function applyImpulseDelay(chipsEl, countdownParent) {
-        if (!impulseEnabled) return;
+        if (!impulsePrevention) return;
 
         if (impulseMode === 'hide') {
             chipsEl.classList.add('chips-hidden');
@@ -1393,14 +1428,17 @@
     }
 
     // ── 전체 빈칸 채우기 모드 ──
-    const FILL_HINTS = { 5: 2, 10: 3, 20: 6, 30: 9, 50: 15 };
+    const FILL_HINTS = { 5: 2, 10: 3, 20: 6, 30: 9, 50: 15, 100: 15 };
 
-    function startFillGame(range) {
+    function startFillGame(range, start) {
         lastMode = 'fill';
         lastRange = range;
+        startNum = start || 1;
+        lastStart = startNum;
         maxNum = range;
-        const hintCount = FILL_HINTS[range] || Math.round(range * 0.3);
-        fillTotal = maxNum - hintCount;
+        const totalCount = maxNum - startNum + 1;
+        const hintCount = FILL_HINTS[totalCount] || Math.round(totalCount * 0.3);
+        fillTotal = totalCount - hintCount;
         placedCount = 0;
         wrongCount = 0;
         startTime = Date.now();
@@ -1409,26 +1447,26 @@
         document.getElementById('result-view').classList.add('hidden');
         document.getElementById('game-view').classList.remove('hidden');
 
-        document.getElementById('game-label').textContent = `1 ~ ${maxNum} (${hintCount}개 힌트)`;
+        document.getElementById('game-label').textContent = `${startNum} ~ ${maxNum} (${hintCount}개 힌트)`;
         document.getElementById('feedback').textContent = '';
         updateProgress();
 
         // 슬롯 생성
         const slotsEl = document.getElementById('slots');
         slotsEl.innerHTML = '';
-        const gridCols = maxNum <= 5 ? 5 : 10;
+        const gridCols = totalCount <= 5 ? 5 : 10;
         slotsEl.style.gridTemplateColumns = `repeat(${gridCols}, 1fr)`;
         slotsEl.style.fontSize = maxNum >= 100 ? '0.7rem' : '';
 
         // 미리 채울 숫자를 랜덤 선택
         const allNums = [];
-        for (let i = 1; i <= maxNum; i++) allNums.push(i);
+        for (let i = startNum; i <= maxNum; i++) allNums.push(i);
         const shuffled = [...allNums];
         shuffle(shuffled);
         const prefilledSet = new Set(shuffled.slice(0, hintCount));
 
-        for (let idx = 0; idx < maxNum; idx++) {
-            const num = idx + 1;
+        for (let idx = 0; idx < totalCount; idx++) {
+            const num = startNum + idx;
             const slot = document.createElement('div');
             slot.className = 'slot';
             slot.dataset.num = num;
@@ -1682,7 +1720,7 @@
         document.getElementById('result-view').classList.add('hidden');
         if (lastMode === 'game') startGame(lastRange, lastStart);
         else if (lastMode === 'quiz') startQuiz(lastRange);
-        else if (lastMode === 'fill') startFillGame(lastRange);
+        else if (lastMode === 'fill') startFillGame(lastRange, lastStart);
         else goHome();
     }
 
