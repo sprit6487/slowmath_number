@@ -1133,6 +1133,7 @@
         document.querySelectorAll('[data-cmode]').forEach(b => {
             b.classList.toggle('selected', b.dataset.cmode === mode);
         });
+        saveSettings();
     }
 
     // 정순/역순 모드
@@ -1143,6 +1144,7 @@
         document.querySelectorAll('[data-omode]').forEach(b => {
             b.classList.toggle('selected', b.dataset.omode === mode);
         });
+        saveSettings();
     }
 
     // 빈칸 힌트 모드
@@ -1153,6 +1155,7 @@
         document.querySelectorAll('[data-gmode]').forEach(b => {
             b.classList.toggle('selected', (enabled && b.dataset.gmode === 'on') || (!enabled && b.dataset.gmode === 'off'));
         });
+        saveSettings();
     }
 
     function nativeKorean(n) {
@@ -1181,6 +1184,38 @@
         return countingMode === 'native' ? nativeKorean(n) : sinoKorean(n);
     }
 
+    // 설정 저장/복원
+    function saveSettings() {
+        localStorage.setItem('slowmath_number_settings', JSON.stringify({
+            ttsEnabled, impulseEnabled, impulseMode, impulseDelay, countingMode, reverseMode, ghostMode
+        }));
+    }
+    function loadSettings() {
+        try {
+            const s = JSON.parse(localStorage.getItem('slowmath_number_settings'));
+            if (!s) return;
+            if (typeof s.ttsEnabled === 'boolean') ttsEnabled = s.ttsEnabled;
+            if (typeof s.impulseEnabled === 'boolean') impulseEnabled = s.impulseEnabled;
+            if (s.impulseMode === 'hide' || s.impulseMode === 'lock') impulseMode = s.impulseMode;
+            if (typeof s.impulseDelay === 'number' && s.impulseDelay >= 1 && s.impulseDelay <= 10) impulseDelay = s.impulseDelay;
+            if (s.countingMode === 'native' || s.countingMode === 'sino') countingMode = s.countingMode;
+            if (typeof s.reverseMode === 'boolean') reverseMode = s.reverseMode;
+            if (typeof s.ghostMode === 'boolean') ghostMode = s.ghostMode;
+        } catch(e) {}
+    }
+    function applySettingsUI() {
+        document.getElementById('tts-toggle').classList.toggle('active', ttsEnabled);
+        document.getElementById('tts-switch').classList.toggle('on', ttsEnabled);
+        document.getElementById('impulse-switch').classList.toggle('on', impulseEnabled);
+        document.getElementById('impulse-toggle').classList.toggle('active', impulseEnabled);
+        document.getElementById('impulse-details').classList.toggle('show', impulseEnabled);
+        document.querySelectorAll('.impulse-mode-btn').forEach(b => b.classList.toggle('selected', b.dataset.mode === impulseMode));
+        document.querySelectorAll('.delay-btn').forEach(b => b.classList.toggle('selected', parseInt(b.dataset.delay) === impulseDelay));
+        document.querySelectorAll('[data-cmode]').forEach(b => b.classList.toggle('selected', b.dataset.cmode === countingMode));
+        document.querySelectorAll('[data-omode]').forEach(b => b.classList.toggle('selected', b.dataset.omode === (reverseMode ? 'desc' : 'asc')));
+        document.querySelectorAll('[data-gmode]').forEach(b => b.classList.toggle('selected', (ghostMode && b.dataset.gmode === 'on') || (!ghostMode && b.dataset.gmode === 'off')));
+    }
+
     // 음성
     let ttsEnabled = true;
     function toggleTTS() {
@@ -1190,6 +1225,7 @@
         tog.classList.toggle('active', ttsEnabled);
         sw.classList.toggle('on', ttsEnabled);
         if (!ttsEnabled && window.speechSynthesis) window.speechSynthesis.cancel();
+        saveSettings();
     }
 
     // 충동방지
@@ -1203,6 +1239,7 @@
         document.getElementById('impulse-switch').classList.toggle('on', impulseEnabled);
         document.getElementById('impulse-toggle').classList.toggle('active', impulseEnabled);
         document.getElementById('impulse-details').classList.toggle('show', impulseEnabled);
+        saveSettings();
     }
 
     function setImpulseMode(mode) {
@@ -1210,6 +1247,7 @@
         document.querySelectorAll('.impulse-mode-btn').forEach(b => {
             b.classList.toggle('selected', b.dataset.mode === mode);
         });
+        saveSettings();
     }
 
     function setDelay(sec) {
@@ -1217,6 +1255,7 @@
         document.querySelectorAll('.delay-btn').forEach(b => {
             b.classList.toggle('selected', parseInt(b.dataset.delay) === sec);
         });
+        saveSettings();
     }
 
     function applyImpulseDelay(chipsEl, countdownParent) {
@@ -1957,6 +1996,8 @@
 
     // Check login state on load
     (function checkLoginState() {
+        loadSettings();
+        applySettingsUI();
         var loginData = localStorage.getItem('slowmath_number_login');
         if (loginData) {
             document.getElementById('login-view').classList.add('hidden');
