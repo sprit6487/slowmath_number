@@ -1700,9 +1700,7 @@
             hint.textContent = `${remaining}개 남았어요`;
             hint.style.color = '#C4AA82';
         } else {
-            const direction = reverseMode ? '(역순) ' : '';
-            hint.textContent = `${direction}다음 숫자: ${nextExpected}`;
-            hint.style.color = '#6BADE8';
+            hint.textContent = '';
         }
     }
 
