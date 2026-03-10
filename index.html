@@ -704,6 +704,25 @@
         .imp-sec-row { display: flex; gap: 4px; }
         .imp-sec { flex: 1; padding: 8px 0; font-size: 0.7rem; font-weight: 600; border-radius: 10px; border: 2px solid #E8E2DA; background: white; color: #8C8070; cursor: pointer; transition: all 0.15s; text-align: center; }
         .imp-sec.active { border-color: #C4AA82; background: #FAF5EE; color: #7B6545; }
+
+        /* ── 오답노트 ── */
+        .wrong-notes-btn { width: 100%; padding: 14px 0; border-radius: 14px; border: 2.5px solid #F07070; background: #FFF5F5; color: #F07070; font-family: 'Noto Sans KR', sans-serif; font-size: 1rem; font-weight: 700; cursor: pointer; margin-top: 10px; transition: transform .1s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .wrong-notes-btn:active { transform: scale(.97); }
+        .wrong-notes-btn .badge { background: #F07070; color: white; border-radius: 50%; min-width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: .75rem; font-weight: 700; }
+        .wn-view { display: none; flex-direction: column; align-items: center; padding: 24px 20px; }
+        .wn-view.active { display: flex; }
+        .wn-header { text-align: center; margin-bottom: 20px; }
+        .wn-header h2 { font-size: 1.25rem; font-weight: 900; color: #4A4035; margin: 0 0 4px; }
+        .wn-header p { font-size: .85rem; color: #B8AD9E; margin: 0; }
+        .wn-list { width: 100%; max-width: 400px; display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 20px; }
+        .wn-chip { padding: 8px 16px; border-radius: 10px; background: #FFF5F5; border: 1.5px solid #F07070; font-size: .9rem; font-weight: 700; color: #F07070; }
+        .wn-empty { color: #B8AD9E; font-size: .9rem; margin: 40px 0; }
+        .wn-actions { display: flex; gap: 10px; width: 100%; max-width: 320px; }
+        .wn-actions button { flex: 1; padding: 13px 0; border-radius: 12px; font-family: 'Noto Sans KR', sans-serif; font-size: .9rem; font-weight: 700; cursor: pointer; transition: transform .1s; }
+        .wn-actions button:active { transform: scale(.97); }
+        .wn-btn-back { border: 2.5px solid #E8E2DA; background: white; color: #8C8070; }
+        .wn-btn-start { border: none; background: #F07070; color: white; box-shadow: 0 2px 8px rgba(240,112,112,.3); }
+        .wn-btn-clear { border: 1.5px solid #E8E2DA; background: white; color: #B8AD9E; padding: 8px 16px; border-radius: 8px; font-size: .75rem; font-weight: 600; cursor: pointer; margin-top: 12px; font-family: 'Noto Sans KR', sans-serif; }
     </style>
 </head>
 <body>
@@ -961,6 +980,11 @@
                 </div>
             </div>
 
+            <!-- 오답노트 버튼 -->
+            <button id="wrong-notes-btn" class="wrong-notes-btn" onclick="showWrongNotes()" style="display:none;">
+                오답노트 <span id="wrong-notes-badge" class="badge">0</span>
+            </button>
+
             <div style="margin-top: auto;"></div>
 
             <!-- 음성 + 충동방지 (plusone 스타일) -->
@@ -1087,6 +1111,20 @@
         <div id="quiz-chips" class="flex justify-center gap-3 flex-wrap"></div>
 
         <div id="quiz-feedback" class="text-center h-8 text-base font-bold mt-6" style="color:#4A4035;"></div>
+    </div>
+
+    <!-- ══════════════ 오답노트 화면 ══════════════ -->
+    <div id="wn-view" class="wn-view flex-1">
+        <div class="wn-header">
+            <h2>오답노트</h2>
+            <p>자주 틀리는 숫자를 다시 연습해요</p>
+        </div>
+        <div id="wn-list" class="wn-list"></div>
+        <div class="wn-actions">
+            <button class="wn-btn-back" onclick="hideWrongNotes()">돌아가기</button>
+            <button id="wn-btn-start" class="wn-btn-start" onclick="startWrongNotePractice()">연습 시작</button>
+        </div>
+        <button class="wn-btn-clear" onclick="clearWrongNotes()">전체 삭제</button>
     </div>
 
     <!-- ══════════════ 결과 화면 ══════════════ -->
@@ -1585,6 +1623,7 @@
                     placeNumber(target, dragValue);
                 } else {
                     wrongCount++;
+                    addWrongNote(dragValue);
                     target.classList.add('wrong');
                     setTimeout(() => target.classList.remove('wrong'), 400);
                     const fb = document.getElementById('feedback');
@@ -1598,6 +1637,7 @@
                     placeNumber(target, dragValue);
                 } else {
                     wrongCount++;
+                    addWrongNote(dragValue);
                     target.classList.add('wrong');
                     setTimeout(() => target.classList.remove('wrong'), 400);
                     const fb = document.getElementById('feedback');
@@ -1726,10 +1766,13 @@
         clearImpulseTimer();
         if (floatingEl) { floatingEl.remove(); floatingEl = null; }
         dragging = false;
+        isWrongNotePractice = false;
         document.getElementById('game-view').classList.add('hidden');
         document.getElementById('quiz-view').classList.add('hidden');
         document.getElementById('result-view').classList.add('hidden');
+        document.getElementById('wn-view').classList.remove('active');
         document.getElementById('start-view').classList.remove('hidden');
+        updateWrongNotesBadge();
     }
 
     // ── 빈칸 맞추기 모드 ──
@@ -1921,6 +1964,7 @@
             } else {
                 // 오답
                 quizWrong++;
+                addWrongNote(dragValue);
                 quizFirstTryInRound = false;
                 target.classList.add('wrong');
                 setTimeout(() => target.classList.remove('wrong'), 400);
@@ -2014,6 +2058,280 @@
             speechSynthesis.onvoiceschanged = () => speechSynthesis.getVoices();
     }
 
+    // ── 오답노트 ──
+    let isWrongNotePractice = false;
+
+    function getWrongNotes() {
+        try {
+            const data = JSON.parse(localStorage.getItem('slowmath_number_wrong_notes'));
+            return Array.isArray(data) ? data : [];
+        } catch(e) { return []; }
+    }
+
+    function saveWrongNotes(notes) {
+        localStorage.setItem('slowmath_number_wrong_notes', JSON.stringify(notes));
+        updateWrongNotesBadge();
+    }
+
+    function addWrongNote(number) {
+        const notes = getWrongNotes();
+        if (!notes.some(n => n.number === number)) {
+            notes.push({ number: number });
+            saveWrongNotes(notes);
+        }
+    }
+
+    function removeWrongNote(number) {
+        const notes = getWrongNotes().filter(n => n.number !== number);
+        saveWrongNotes(notes);
+    }
+
+    function updateWrongNotesBadge() {
+        const notes = getWrongNotes();
+        const btn = document.getElementById('wrong-notes-btn');
+        const badge = document.getElementById('wrong-notes-badge');
+        if (!btn || !badge) return;
+        if (notes.length === 0) {
+            btn.style.display = 'none';
+        } else {
+            btn.style.display = 'flex';
+            badge.textContent = notes.length;
+        }
+    }
+
+    function showWrongNotes() {
+        const notes = getWrongNotes();
+        const listEl = document.getElementById('wn-list');
+        listEl.innerHTML = '';
+
+        document.getElementById('start-view').classList.add('hidden');
+        document.getElementById('wn-view').classList.add('active');
+
+        if (notes.length === 0) {
+            listEl.innerHTML = '<div class="wn-empty">틀린 숫자가 없어요!</div>';
+            document.getElementById('wn-btn-start').style.display = 'none';
+        } else {
+            const sorted = [...notes].sort((a, b) => a.number - b.number);
+            sorted.forEach(n => {
+                const chip = document.createElement('span');
+                chip.className = 'wn-chip';
+                chip.textContent = n.number;
+                listEl.appendChild(chip);
+            });
+            document.getElementById('wn-btn-start').style.display = '';
+        }
+    }
+
+    function hideWrongNotes() {
+        document.getElementById('wn-view').classList.remove('active');
+        document.getElementById('start-view').classList.remove('hidden');
+    }
+
+    function clearWrongNotes() {
+        if (!confirm('오답노트를 전체 삭제할까요?')) return;
+        saveWrongNotes([]);
+        hideWrongNotes();
+    }
+
+    function startWrongNotePractice() {
+        const notes = getWrongNotes();
+        if (notes.length === 0) return;
+
+        isWrongNotePractice = true;
+        const wrongNumbers = notes.map(n => n.number).sort((a, b) => a - b);
+
+        // Determine range that covers all wrong numbers
+        const minNum = wrongNumbers[0];
+        const maxNumWN = wrongNumbers[wrongNumbers.length - 1];
+
+        // Build a sequence: snap to nice range boundaries
+        const seqStart = Math.max(1, minNum - 1);
+        const seqEnd = Math.min(100, maxNumWN + 1);
+        const totalInSeq = seqEnd - seqStart + 1;
+
+        // Decide card count based on total range
+        let cardCount, hideCount;
+        if (totalInSeq <= 5) {
+            cardCount = totalInSeq;
+            hideCount = Math.min(wrongNumbers.length, cardCount);
+        } else if (totalInSeq <= 8) {
+            cardCount = totalInSeq;
+            hideCount = Math.min(wrongNumbers.length, cardCount);
+        } else {
+            cardCount = 8;
+            hideCount = Math.min(wrongNumbers.length, 4);
+        }
+
+        // Setup quiz mode
+        lastMode = 'quiz';
+        lastRange = maxNumWN;
+        quizRange = maxNumWN;
+        quizRound = 0;
+        quizCorrect = 0;
+        quizWrong = 0;
+        quizStartTime = Date.now();
+
+        // Calculate how many rounds we need (each round shows up to hideCount wrong numbers)
+        const totalRounds = Math.ceil(wrongNumbers.length / hideCount);
+        const QUIZ_TOTAL_WN = Math.max(totalRounds, 1);
+
+        document.getElementById('wn-view').classList.remove('active');
+        document.getElementById('start-view').classList.add('hidden');
+        document.getElementById('result-view').classList.add('hidden');
+        document.getElementById('quiz-view').classList.remove('hidden');
+
+        if (window.speechSynthesis) speechSynthesis.speak(new SpeechSynthesisUtterance(''));
+
+        // Override nextQuizRound for wrong-note practice
+        let wnRoundIdx = 0;
+        const wnChunks = [];
+        for (let i = 0; i < wrongNumbers.length; i += hideCount) {
+            wnChunks.push(wrongNumbers.slice(i, i + hideCount));
+        }
+
+        function nextWNRound() {
+            if (wnRoundIdx >= wnChunks.length) {
+                showQuizResult();
+                return;
+            }
+
+            quizRound++;
+            quizPlacedInRound = 0;
+            quizFirstTryInRound = true;
+
+            document.getElementById('quiz-label').textContent = `오답 연습 ${quizRound} / ${wnChunks.length}`;
+            document.getElementById('quiz-progress').style.width = `${(quizRound - 1) / wnChunks.length * 100}%`;
+            document.getElementById('quiz-score').textContent = quizCorrect;
+            document.getElementById('quiz-feedback').textContent = '';
+            document.getElementById('quiz-hint').textContent = '틀렸던 숫자를 다시 찾아봐요';
+            document.getElementById('quiz-hint').style.color = '#F07070';
+
+            const hiddenInRound = wnChunks[wnRoundIdx];
+            wnRoundIdx++;
+
+            // Build sequence around the hidden numbers
+            const hnMin = hiddenInRound[0];
+            const hnMax = hiddenInRound[hiddenInRound.length - 1];
+            const neededVisible = cardCount - hiddenInRound.length;
+
+            // Try to build a contiguous sequence that includes all hidden numbers
+            let sStart = Math.max(1, hnMin - Math.floor(neededVisible / 2));
+            let sEnd = sStart + cardCount - 1;
+            if (sEnd > 100) { sEnd = 100; sStart = Math.max(1, sEnd - cardCount + 1); }
+
+            // Make sure all hidden numbers are in range
+            if (hnMax > sEnd) { sEnd = hnMax; sStart = Math.max(1, sEnd - cardCount + 1); }
+            if (hnMin < sStart) { sStart = hnMin; sEnd = sStart + cardCount - 1; }
+
+            const actualCardCount = sEnd - sStart + 1;
+
+            quizNumbers = [];
+            for (let i = sStart; i <= sEnd; i++) quizNumbers.push(i);
+
+            const hiddenSet = new Set(hiddenInRound);
+            quizHiddenSet = hiddenSet;
+            quizHiddenOrder = quizNumbers.filter(n => hiddenSet.has(n));
+            quizNextHidden = quizHiddenOrder[0];
+
+            // Render cards
+            const cardsEl = document.getElementById('quiz-cards');
+            cardsEl.innerHTML = '';
+            cardsEl.classList.toggle('quiz-cards-8', actualCardCount >= 8);
+            quizNumbers.forEach(n => {
+                const card = document.createElement('div');
+                card.className = 'quiz-card';
+                if (hiddenSet.has(n)) {
+                    card.classList.add('hidden-card');
+                    card.textContent = '?';
+                    card.dataset.num = n;
+                } else {
+                    card.classList.add('open');
+                    card.textContent = n;
+                }
+                cardsEl.appendChild(card);
+            });
+
+            // Render chips
+            const chipNums = [...hiddenInRound];
+            shuffle(chipNums);
+            const chipsEl = document.getElementById('quiz-chips');
+            chipsEl.innerHTML = '';
+            chipNums.forEach(n => {
+                const chip = document.createElement('div');
+                chip.className = 'quiz-chip';
+                chip.textContent = n;
+                chip.dataset.num = n;
+                bindQuizDrag(chip, n);
+                chipsEl.appendChild(chip);
+            });
+
+            clearImpulseTimer();
+            applyImpulseDelay(chipsEl, chipsEl.parentElement);
+        }
+
+        // Patch the quiz completion to handle WN rounds and removal
+        const origEndQuizDrag = endQuizDrag;
+        endQuizDrag = function(x, y) {
+            document.querySelectorAll('.quiz-card.hidden-card.drag-over').forEach(c => c.classList.remove('drag-over'));
+
+            const target = getQuizCardAt(x, y);
+            if (target && !target.classList.contains('filled')) {
+                const cardNum = parseInt(target.dataset.num);
+                if (dragValue === cardNum) {
+                    // Correct - remove from wrong notes
+                    removeWrongNote(cardNum);
+                    target.textContent = cardNum;
+                    target.classList.add('filled', 'pop-in');
+                    dragChipEl.classList.add('placed');
+                    quizPlacedInRound++;
+
+                    const fb = document.getElementById('quiz-feedback');
+
+                    if (quizPlacedInRound >= quizHiddenOrder.length) {
+                        if (quizFirstTryInRound) quizCorrect++;
+                        document.getElementById('quiz-score').textContent = quizCorrect;
+                        document.getElementById('quiz-progress').style.width = `${quizRound / wnChunks.length * 100}%`;
+                        fb.textContent = '잘했어요! 🎉';
+                        fb.style.color = '#5BC886';
+                        speak('잘했어요.');
+
+                        if (wnRoundIdx >= wnChunks.length) {
+                            setTimeout(() => {
+                                isWrongNotePractice = false;
+                                endQuizDrag = origEndQuizDrag;
+                                showQuizResult();
+                            }, 1500);
+                        } else {
+                            setTimeout(nextWNRound, 1300);
+                        }
+                    } else {
+                        fb.textContent = '잘했어요!';
+                        fb.style.color = '#5BC886';
+                        speak(String(cardNum));
+                        setTimeout(() => { if (fb.textContent === '잘했어요!') fb.textContent = ''; }, 800);
+                    }
+                } else {
+                    quizWrong++;
+                    quizFirstTryInRound = false;
+                    target.classList.add('wrong');
+                    setTimeout(() => target.classList.remove('wrong'), 400);
+                    const fb = document.getElementById('quiz-feedback');
+                    fb.textContent = '이 칸은 다른 숫자 자리예요';
+                    fb.style.color = '#F07070';
+                    speak('다시 해봐요.');
+                }
+            }
+
+            if (floatingEl) { floatingEl.remove(); floatingEl = null; }
+            if (dragChipEl) dragChipEl.classList.remove('dragging');
+            dragging = false;
+            dragValue = null;
+            dragChipEl = null;
+        };
+
+        nextWNRound();
+    }
+
     // ---- Social Login ----
     function socialLogin(provider) {
         localStorage.setItem('slowmath_number_login', JSON.stringify({
@@ -2034,6 +2352,7 @@
     (function checkLoginState() {
         loadSettings();
         applySettingsUI();
+        updateWrongNotesBadge();
         var loginData = localStorage.getItem('slowmath_number_login');
         if (loginData) {
             document.getElementById('login-view').classList.add('hidden');
