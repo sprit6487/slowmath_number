@@ -1162,6 +1162,11 @@
                 다시 하기
             </button>
         </div>
+        <button onclick="shareApp()"
+                class="w-full py-3 rounded-2xl font-bold text-sm border-2 transition hover:opacity-90 active:scale-[0.98]"
+                style="border-color:#E8E2DA; color:#8C8070; background:white; margin-top:8px;">
+            📤 공유하기
+        </button>
     </div>
 </div>
 
@@ -1773,6 +1778,21 @@
         document.getElementById('wn-view').classList.remove('active');
         document.getElementById('start-view').classList.remove('hidden');
         updateWrongNotesBadge();
+    }
+
+    function shareApp() {
+        const title = document.title;
+        const url = window.location.href;
+        const text = title + ' - 아이와 함께 연습해보세요!';
+        if (navigator.share) {
+            navigator.share({ title: title, text: text, url: url }).catch(function(){});
+        } else {
+            navigator.clipboard.writeText(url).then(function() {
+                alert('링크가 복사되었습니다!');
+            }).catch(function() {
+                prompt('링크를 복사하세요:', url);
+            });
+        }
     }
 
     // ── 빈칸 맞추기 모드 ──
