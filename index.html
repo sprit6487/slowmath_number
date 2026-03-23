@@ -35,6 +35,8 @@
             background: #F5F1EB;
             min-height: 100dvh;
             display: flex; justify-content: center; align-items: flex-start;
+            user-select: none; -webkit-user-select: none;
+            -webkit-touch-callout: none;
         }
 
         .app {
@@ -121,6 +123,7 @@
         .mode-card[data-range="30"]  { border-left-color: #F0A050 !important; }
         .mode-card[data-range="50"]  { border-left-color: #E87B7B !important; }
         .mode-card[data-range="100"] { border-left-color: #C46BE8 !important; }
+        .mode-card p:first-child { font-size: 0.82rem !important; white-space: nowrap; }
 
         /* 홈 버튼 */
         .btn-home {
@@ -598,8 +601,8 @@
             .btn-home svg { width: 22px; height: 22px; }
             .progress-track { height: 10px; }
             .mode-card { padding: 20px !important; }
-            .mode-card p:first-child { font-size: 1.4rem !important; }
-            .mode-card p:last-child { font-size: 0.85rem !important; }
+            .mode-card p:first-child { font-size: 1.05rem !important; }
+            .mode-card p:last-child { font-size: 0.8rem !important; }
             .slots-grid { gap: 6px; }
             .slot { border-radius: 14px; font-size: 1.3rem; border-width: 3px; }
             .num-chip { width: 42px; height: 42px; font-size: 0.91rem; }
@@ -616,7 +619,7 @@
         /* ── 반응형: 큰 태블릿 (1024px+) ── */
         @media (min-width: 1024px) {
             .app { max-width: 800px; padding: 48px 44px; }
-            .mode-card p:first-child { font-size: 1.6rem !important; }
+            .mode-card p:first-child { font-size: 1.2rem !important; }
             .slot { font-size: 1.4rem; }
             .num-chip { width: 47px; height: 47px; font-size: 0.98rem; }
             .quiz-card { max-width: 90px; font-size: 1.9rem; }
@@ -998,32 +1001,32 @@
                     <button onclick="startQuiz(5)" data-range="5"
                             class="mode-card rounded-xl p-3 text-left border-2" style="border-color:#E8E2DA; background:white;">
                         <p class="text-base font-bold" style="color:#4A4035;">1 부터 5</p>
-                        <p class="text-xs mt-0.5" style="color:#B8AD9E;">5개 중 2개 숨김</p>
+                        <p class="text-xs mt-0.5" style="color:#B8AD9E;">5개 중<br>2개 숨김</p>
                     </button>
                     <button onclick="startQuiz(10)" data-range="10"
                             class="mode-card rounded-xl p-3 text-left border-2" style="border-color:#E8E2DA; background:white;">
                         <p class="text-base font-bold" style="color:#4A4035;">1 부터 10</p>
-                        <p class="text-xs mt-0.5" style="color:#B8AD9E;">8개 중 4개 숨김</p>
+                        <p class="text-xs mt-0.5" style="color:#B8AD9E;">8개 중<br>4개 숨김</p>
                     </button>
                     <button onclick="startQuiz(20)" data-range="20"
                             class="mode-card rounded-xl p-3 text-left border-2" style="border-color:#E8E2DA; background:white;">
                         <p class="text-base font-bold" style="color:#4A4035;">1 부터 20</p>
-                        <p class="text-xs mt-0.5" style="color:#B8AD9E;">8개 중 4개 숨김</p>
+                        <p class="text-xs mt-0.5" style="color:#B8AD9E;">8개 중<br>4개 숨김</p>
                     </button>
                     <button onclick="startQuiz(30)" data-range="30"
                             class="mode-card rounded-xl p-3 text-left border-2" style="border-color:#E8E2DA; background:white;">
                         <p class="text-base font-bold" style="color:#4A4035;">1 부터 30</p>
-                        <p class="text-xs mt-0.5" style="color:#B8AD9E;">8개 중 4개 숨김</p>
+                        <p class="text-xs mt-0.5" style="color:#B8AD9E;">8개 중<br>4개 숨김</p>
                     </button>
                     <button onclick="startQuiz(50)" data-range="50"
                             class="mode-card rounded-xl p-3 text-left border-2" style="border-color:#E8E2DA; background:white;">
                         <p class="text-base font-bold" style="color:#4A4035;">1 부터 50</p>
-                        <p class="text-xs mt-0.5" style="color:#B8AD9E;">8개 중 4개 숨김</p>
+                        <p class="text-xs mt-0.5" style="color:#B8AD9E;">8개 중<br>4개 숨김</p>
                     </button>
                     <button onclick="startQuiz(100)" data-range="100"
                             class="mode-card rounded-xl p-3 text-left border-2" style="border-color:#E8E2DA; background:white;">
                         <p class="text-base font-bold" style="color:#4A4035;">1 부터 100</p>
-                        <p class="text-xs mt-0.5" style="color:#B8AD9E;">8개 중 4개 숨김</p>
+                        <p class="text-xs mt-0.5" style="color:#B8AD9E;">8개 중<br>4개 숨김</p>
                     </button>
                 </div>
             </div>
