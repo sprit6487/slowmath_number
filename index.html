@@ -785,6 +785,8 @@
     .splash-subtitle { color: #B8B0A8; font-size: 0.9375rem; font-weight: 500; margin-bottom: 48px; }
     @keyframes splashFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
     @media (min-width:768px) { .splash-title{font-size:2.5rem} .splash-subtitle{font-size:1.0625rem} }
+      .btn-next-q { display: block; width: 100%; max-width: 360px; margin: 12px auto 0; padding: 14px 0; border-radius: 16px; border: none; background: #4A4035; color: white; font-family: inherit; font-size: 1rem; font-weight: 700; cursor: pointer; transition: background 0.15s, transform 0.1s; box-shadow: 0 2px 8px rgba(74,64,53,0.15); }
+      .btn-next-q:active { transform: scale(0.98); background: #2E261D; }
 </style>
 </head>
 <body>
@@ -1209,6 +1211,7 @@
         <div id="quiz-chips" class="flex justify-center gap-3 flex-wrap"></div>
 
         <div id="quiz-feedback" class="text-center h-8 text-base font-bold mt-6" style="color:#4A4035;"></div>
+        <button class="btn-next-q" id="quiz-next-btn" style="display:none;" onclick="onQuizNextQ()">다음 문제 →</button>
     </div>
 
     <!-- ══════════════ 오답노트 화면 ══════════════ -->
@@ -1898,6 +1901,7 @@
     // ── 빈칸 맞추기 모드 ──
     const QUIZ_TOTAL = 5;
     let quizRound = 0;
+    let quizNextFn = null;
     let quizCorrect = 0;
     let quizWrong = 0;
     let quizStartTime = 0;
@@ -1927,6 +1931,7 @@
     }
 
     function nextQuizRound() {
+        document.getElementById('quiz-next-btn').style.display = 'none';
         quizRound++;
         quizPlacedInRound = 0;
         quizFirstTryInRound = true;
@@ -2073,7 +2078,8 @@
                     if (quizRound >= QUIZ_TOTAL) {
                         setTimeout(showQuizResult, 1500);
                     } else {
-                        setTimeout(nextQuizRound, 1300);
+                        quizNextFn = nextQuizRound;
+                        document.getElementById('quiz-next-btn').style.display = '';
                     }
                 } else {
                     fb.textContent = '잘했어요!';
@@ -2101,6 +2107,11 @@
         dragging = false;
         dragValue = null;
         dragChipEl = null;
+    }
+
+    function onQuizNextQ() {
+        document.getElementById('quiz-next-btn').style.display = 'none';
+        if (quizNextFn) { const fn = quizNextFn; quizNextFn = null; fn(); }
     }
 
     function showQuizResult() {
@@ -2310,6 +2321,7 @@
         }
 
         function nextWNRound() {
+            document.getElementById('quiz-next-btn').style.display = 'none';
             if (wnRoundIdx >= wnChunks.length) {
                 showQuizResult();
                 return;
@@ -2422,7 +2434,8 @@
                                 showQuizResult();
                             }, 1500);
                         } else {
-                            setTimeout(nextWNRound, 1300);
+                            quizNextFn = nextWNRound;
+                            document.getElementById('quiz-next-btn').style.display = '';
                         }
                     } else {
                         fb.textContent = '잘했어요!';
