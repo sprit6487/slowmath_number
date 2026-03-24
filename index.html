@@ -787,6 +787,12 @@
     @media (min-width:768px) { .splash-title{font-size:2.5rem} .splash-subtitle{font-size:1.0625rem} }
       .btn-next-q { display: block; width: 100%; max-width: 360px; margin: 12px auto 0; padding: 14px 0; border-radius: 16px; border: none; background: #4A4035; color: white; font-family: inherit; font-size: 1rem; font-weight: 700; cursor: pointer; transition: background 0.15s, transform 0.1s; box-shadow: 0 2px 8px rgba(74,64,53,0.15); }
       .btn-next-q:active { transform: scale(0.98); background: #2E261D; }
+      .complete-overlay { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 40px 0; }
+      .complete-emoji { font-size: 56px; }
+      .complete-msg { font-size: 1.25rem; font-weight: 900; color: #4A4035; }
+      .complete-sub { font-size: 0.85rem; color: #B8AD9E; }
+      .next-btn { margin-top: 8px; padding: 14px 36px; border: none; border-radius: 12px; background: #6BADE8; color: #fff; font-size: 1rem; font-weight: 700; cursor: pointer; font-family: inherit; transition: transform 0.12s; }
+      .next-btn:active { transform: scale(0.96); }
 </style>
 </head>
 <body>
@@ -1230,38 +1236,12 @@
 
     <!-- ══════════════ 결과 화면 ══════════════ -->
     <div id="result-view" class="hidden flex flex-col flex-1 fade-in">
-        <div class="flex-1 flex flex-col justify-center">
-            <div class="text-center mb-8">
-                <div class="text-6xl mb-4">🏆</div>
-                <h2 class="text-2xl font-bold" style="color:#4A4035;">다 맞혔어요!</h2>
-                <p class="text-sm mt-2" style="color:#B8AD9E;">숫자 순서를 잘 알고 있어요</p>
-            </div>
-            <div class="flex flex-col gap-3 mb-8">
-                <div class="flex justify-between items-center rounded-2xl p-4" style="background:#F5FAFF; border:1.5px solid #D9EDFC;">
-                    <span class="text-sm" style="color:#6B5F50;">범위</span>
-                    <span id="r-range" class="text-lg font-bold" style="color:#4A8FC2;">1 부터 10</span>
-                </div>
-                <div class="flex justify-between items-center rounded-2xl p-4" style="background:#FFFAF2; border:1.5px solid #F5D5A8;">
-                    <span class="text-sm" style="color:#6B5F50;">걸린 시간</span>
-                    <span id="r-time" class="text-lg font-bold" style="color:#C07830;">0초</span>
-                </div>
-                <div class="flex justify-between items-center rounded-2xl p-4" style="background:#FDE8E8; border:1.5px solid #F5B8B8;">
-                    <span class="text-sm" style="color:#6B5F50;">틀린 횟수</span>
-                    <span id="r-wrong" class="text-lg font-bold" style="color:#D04040;">0번</span>
-                </div>
-            </div>
-        </div>
-        <div class="flex gap-3">
-            <button onclick="goHome()"
-                    class="flex-1 py-3.5 rounded-2xl font-bold text-sm border-2 transition hover:opacity-90 active:scale-[0.98]"
-                    style="border-color:#E8E2DA; color:#6B5F50; background:white;">
-                홈으로
-            </button>
-            <button onclick="replay()"
-                    class="flex-1 py-3.5 rounded-2xl font-bold text-sm border-2 transition hover:opacity-90 active:scale-[0.98]"
-                    style="border-color:#C4AA82; color:#7B6545; background:#FAF5EE;">
-                다시 하기
-            </button>
+        <div class="complete-overlay">
+            <div class="complete-emoji" id="r-emoji">🏆</div>
+            <div class="complete-msg" id="r-msg">완료!</div>
+            <div class="complete-sub" id="r-sub"></div>
+            <button class="next-btn" onclick="replay()">다시 하기</button>
+            <button class="next-btn" onclick="goHome()" style="background:#EDE8E0;color:#8C8070;">홈으로</button>
         </div>
     </div>
 </div>
@@ -1857,9 +1837,9 @@
         document.getElementById('game-view').classList.add('hidden');
         document.getElementById('result-view').classList.remove('hidden');
         const rangeText = reverseMode ? `${maxNum} → ${startNum} 역순` : `${startNum} ~ ${maxNum}`;
-        document.getElementById('r-range').textContent = rangeText;
-        document.getElementById('r-time').textContent = `${sec}초`;
-        document.getElementById('r-wrong').textContent = `${wrongCount}번`;
+        document.getElementById('r-emoji').textContent = wrongCount === 0 ? '🏆' : '👏';
+        document.getElementById('r-msg').textContent = '완료!';
+        document.getElementById('r-sub').textContent = `범위 ${rangeText} · ${sec}초 · 틀린 횟수 ${wrongCount}번`;
     }
 
     function replay() {
@@ -2118,9 +2098,9 @@
         const sec = Math.floor((Date.now() - quizStartTime) / 1000);
         document.getElementById('quiz-view').classList.add('hidden');
         document.getElementById('result-view').classList.remove('hidden');
-        document.getElementById('r-range').textContent = `빈칸 1~${quizRange}`;
-        document.getElementById('r-time').textContent = `${sec}초`;
-        document.getElementById('r-wrong').textContent = `${quizWrong}번`;
+        document.getElementById('r-emoji').textContent = quizWrong === 0 ? '🏆' : '👏';
+        document.getElementById('r-msg').textContent = '완료!';
+        document.getElementById('r-sub').textContent = `빈칸 1~${quizRange} · ${sec}초 · 틀린 횟수 ${quizWrong}번`;
         speak(`다 풀었어요. ${nativeNum(quizCorrect)} 문제 맞혔어요.`);
     }
 
