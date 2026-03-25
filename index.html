@@ -1144,7 +1144,7 @@
         </div>
 
         <div style="text-align:center; margin-top:24px;">
-            <button class="logout-btn" onclick="socialLogout()">로그아웃</button>
+            <button class="logout-btn" style="display:none" onclick="socialLogout()">로그아웃</button>
         </div>
     </div>
 
@@ -2455,6 +2455,7 @@
         const _sp=sessionStorage.getItem('_sp');if(_sp){sessionStorage.removeItem('_sp');startGame(...JSON.parse(_sp));return;}
         document.getElementById('login-view').classList.add('hidden');
         document.getElementById('start-view').classList.remove('hidden');
+        document.querySelector('.logout-btn').style.display=localStorage.getItem('slowmath_number_login')?'':'none';
     }
 
     function socialLogout() {
@@ -2470,6 +2471,7 @@
         updateWrongNotesBadge();
         document.getElementById('login-view').classList.add('hidden');
         document.getElementById('start-view').classList.remove('hidden');
+        document.querySelector('.logout-btn').style.display=localStorage.getItem('slowmath_number_login')?'':'none';
     })();
 
 // ─── Splash Screen (3초 후 페이드아웃) ───
