@@ -2472,9 +2472,13 @@
         loadSettings();
         applySettingsUI();
         updateWrongNotesBadge();
-        document.getElementById('login-view').classList.add('hidden');
-        document.getElementById('start-view').classList.remove('hidden');
-        document.querySelector('.logout-btn').style.display=localStorage.getItem('slowmath_number_login')?'':'none';
+        if (localStorage.getItem('slowmath_number_login')) {
+            document.getElementById('login-view').classList.add('hidden');
+            document.getElementById('start-view').classList.remove('hidden');
+            document.querySelector('.logout-btn').style.display='';
+        } else {
+            document.querySelector('.logout-btn').style.display='none';
+        }
     })();
 
 // ─── Splash Screen (3초 후 페이드아웃) ───
